@@ -6643,29 +6643,6 @@ for the logo on the board is tSilk.</description>
 </library>
 <library name="mike-temp">
 <packages>
-<package name="TMB-6">
-<smd name="1" x="-1.8" y="0.95" dx="1.6" dy="0.7" layer="1"/>
-<smd name="2" x="-1.8" y="0" dx="1.6" dy="0.7" layer="1"/>
-<smd name="3" x="-1.8" y="-0.95" dx="1.6" dy="0.7" layer="1"/>
-<smd name="4" x="1.8" y="-0.95" dx="1.6" dy="0.7" layer="1"/>
-<smd name="5" x="1.8" y="0" dx="1.6" dy="0.7" layer="1"/>
-<smd name="6" x="1.8" y="0.95" dx="1.6" dy="0.7" layer="1"/>
-<wire x1="-1.9" y1="1.3" x2="-1.9" y2="-1.3" width="0.127" layer="51"/>
-<wire x1="-1.9" y1="-1.3" x2="1.9" y2="-1.3" width="0.127" layer="51"/>
-<wire x1="1.9" y1="-1.3" x2="1.9" y2="1.3" width="0.127" layer="51"/>
-<wire x1="1.9" y1="1.3" x2="-1.9" y2="1.3" width="0.127" layer="51"/>
-<text x="0" y="1.85" size="1.27" layer="25" align="bottom-center">&gt;NAME</text>
-<text x="0" y="-1.95" size="1.27" layer="27" rot="R180" align="bottom-center">&gt;VALUE</text>
-<wire x1="-1.9" y1="1.5" x2="-1.9" y2="1.6" width="0.127" layer="21"/>
-<wire x1="-1.9" y1="1.6" x2="1.9" y2="1.6" width="0.127" layer="21"/>
-<wire x1="1.9" y1="1.6" x2="1.9" y2="1.5" width="0.127" layer="21"/>
-<wire x1="-1.9" y1="-1.5" x2="-1.9" y2="-1.6" width="0.127" layer="21"/>
-<wire x1="-1.9" y1="-1.6" x2="1.9" y2="-1.6" width="0.127" layer="21"/>
-<wire x1="1.9" y1="-1.6" x2="1.9" y2="-1.5" width="0.127" layer="21"/>
-<circle x="-1.9" y="2.3" radius="0.3" width="0.3048" layer="21"/>
-<circle x="-1.9" y="2.3" radius="0.1" width="0.3048" layer="21"/>
-<circle x="-1.9" y="2.3" radius="0.2" width="0.3048" layer="21"/>
-</package>
 <package name="SJ_2W">
 <description>&lt;b&gt;Solder jumper&lt;/b&gt;</description>
 <wire x1="3.175" y1="-1.524" x2="-3.175" y2="-1.524" width="0.1524" layer="21"/>
@@ -7025,6 +7002,47 @@ will be further integrated into the Sparkfun Library for other footprints.  It c
 <rectangle x1="2.286" y1="-0.254" x2="2.794" y2="0.254" layer="51"/>
 <rectangle x1="-0.254" y1="-0.254" x2="0.254" y2="0.254" layer="51"/>
 </package>
+<package name="FN-6">
+<smd name="1" x="-0.775" y="0.65" dx="1.05" dy="0.3" layer="1" rot="R180"/>
+<smd name="2" x="-0.775" y="0" dx="1.05" dy="0.3" layer="1" roundness="100"/>
+<smd name="3" x="-0.775" y="-0.65" dx="1.05" dy="0.3" layer="1" roundness="100"/>
+<smd name="4" x="0.775" y="-0.65" dx="1.05" dy="0.3" layer="1" roundness="100"/>
+<smd name="5" x="0.775" y="0" dx="1.05" dy="0.3" layer="1" roundness="100"/>
+<smd name="6" x="0.775" y="0.65" dx="1.05" dy="0.3" layer="1" roundness="100"/>
+<wire x1="-1" y1="1" x2="-1" y2="-1" width="0.127" layer="51"/>
+<wire x1="-1" y1="-1" x2="1" y2="-1" width="0.127" layer="51"/>
+<wire x1="1" y1="-1" x2="1" y2="1" width="0.127" layer="51"/>
+<wire x1="1" y1="1" x2="-1" y2="1" width="0.127" layer="51"/>
+<text x="0" y="1.25" size="0.4064" layer="25" align="bottom-center">&gt;NAME</text>
+<text x="0" y="-1.25" size="0.4064" layer="27" rot="R180" align="bottom-center">&gt;VALUE</text>
+<wire x1="-1" y1="1" x2="1" y2="1" width="0.127" layer="21"/>
+<wire x1="-1" y1="-1" x2="1" y2="-1" width="0.127" layer="21"/>
+<circle x="-0.65" y="1.55" radius="0.1" width="0.3048" layer="21"/>
+<circle x="-0.65" y="1.55" radius="0.2" width="0.3048" layer="21"/>
+</package>
+<package name="TMB-6">
+<smd name="1" x="-1.8" y="0.95" dx="1.6" dy="0.7" layer="1"/>
+<smd name="2" x="-1.8" y="0" dx="1.6" dy="0.7" layer="1"/>
+<smd name="3" x="-1.8" y="-0.95" dx="1.6" dy="0.7" layer="1"/>
+<smd name="4" x="1.8" y="-0.95" dx="1.6" dy="0.7" layer="1"/>
+<smd name="5" x="1.8" y="0" dx="1.6" dy="0.7" layer="1"/>
+<smd name="6" x="1.8" y="0.95" dx="1.6" dy="0.7" layer="1"/>
+<wire x1="-1.9" y1="1.3" x2="-1.9" y2="-1.3" width="0.127" layer="51"/>
+<wire x1="-1.9" y1="-1.3" x2="1.9" y2="-1.3" width="0.127" layer="51"/>
+<wire x1="1.9" y1="-1.3" x2="1.9" y2="1.3" width="0.127" layer="51"/>
+<wire x1="1.9" y1="1.3" x2="-1.9" y2="1.3" width="0.127" layer="51"/>
+<text x="0" y="1.85" size="0.4064" layer="25" align="bottom-center">&gt;NAME</text>
+<text x="0" y="-1.95" size="0.4064" layer="27" rot="R180" align="bottom-center">&gt;VALUE</text>
+<wire x1="-1.9" y1="1.5" x2="-1.9" y2="1.6" width="0.127" layer="21"/>
+<wire x1="-1.9" y1="1.6" x2="1.9" y2="1.6" width="0.127" layer="21"/>
+<wire x1="1.9" y1="1.6" x2="1.9" y2="1.5" width="0.127" layer="21"/>
+<wire x1="-1.9" y1="-1.5" x2="-1.9" y2="-1.6" width="0.127" layer="21"/>
+<wire x1="-1.9" y1="-1.6" x2="1.9" y2="-1.6" width="0.127" layer="21"/>
+<wire x1="1.9" y1="-1.6" x2="1.9" y2="-1.5" width="0.127" layer="21"/>
+<circle x="-1.9" y="2.3" radius="0.3" width="0.3048" layer="21"/>
+<circle x="-1.9" y="2.3" radius="0.1" width="0.3048" layer="21"/>
+<circle x="-1.9" y="2.3" radius="0.2" width="0.3048" layer="21"/>
+</package>
 </packages>
 <symbols>
 <symbol name="TSL2561">
@@ -7078,11 +7096,46 @@ will be further integrated into the Sparkfun Library for other footprints.  It c
 </symbols>
 <devicesets>
 <deviceset name="TSL2561" prefix="U">
+<description>&lt;b&gt;TSL2561 illumination sensor&lt;/b&gt;&lt;p&gt;
+Approximates Human Eye Response&lt;br&gt;
+Precisely Measures Illuminance&lt;br&gt;
+Programmable Interrupt Function with
+User-Defined Upper and Lower Threshold&lt;br&gt;
+400 KHz I2C interface&lt;br&gt;
+Programmable Analog Gain and Integration
+Time Supporting 1,000,000-to-1 Dynamic
+Range&lt;br&gt;
+Automatically Rejects 50/60-Hz Lighting
+Ripple&lt;br&gt;
+Low Active Power (0.75 mW Typical) with
+Power Down Mode&lt;br&gt;
+RoHS Compliant&lt;p&gt;
+
+The TSL2561 is a light-to-digital converter that transform light intensity to a digital signal output via I2C interface. The device combines one broadband
+photodiode (visible plus infrared) and one infrared-responding photodiode on a single CMOS integrated circuit
+capable of providing a near-photopic response over an effective 20-bit dynamic range (16-bit resolution). Two
+integrating ADCs convert the photodiode currents to a digital output that represents the irradiance measured
+on each channel. This digital output can be input to a microprocessor where illuminance (ambient light level)
+in lux is derived using an empirical formula to approximate the human eye response. The TSL2561 device supports a traditional level style interrupt that
+remains asserted until the firmware clears it.</description>
 <gates>
 <gate name="G$1" symbol="TSL2561" x="0" y="0"/>
 </gates>
 <devices>
 <device name="T" package="TMB-6">
+<connects>
+<connect gate="G$1" pin="ADDR" pad="2"/>
+<connect gate="G$1" pin="GND" pad="3"/>
+<connect gate="G$1" pin="INT" pad="5"/>
+<connect gate="G$1" pin="SCL" pad="4"/>
+<connect gate="G$1" pin="SDA" pad="6"/>
+<connect gate="G$1" pin="VDD" pad="1"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="FN" package="FN-6">
 <connects>
 <connect gate="G$1" pin="ADDR" pad="2"/>
 <connect gate="G$1" pin="GND" pad="3"/>
@@ -8082,7 +8135,7 @@ This is the mechanical footprint for a #4 phillips button head screw. Use the ke
 </classes>
 <parts>
 <part name="FRAME1" library="SparkFun-Aesthetics" deviceset="FRAME-LETTER" device=""/>
-<part name="U1" library="mike-temp" deviceset="TSL2561" device="T"/>
+<part name="U1" library="mike-temp" deviceset="TSL2561" device="FN" value="TSL2561FN"/>
 <part name="SJ1" library="mike-temp" deviceset="SOLDERJUMPER_2WAY" device="PASTE1&amp;2&amp;3"/>
 <part name="SJ2" library="mike-temp" deviceset="SOLDERJUMPER_2WAY" device="S"/>
 <part name="R1" library="SparkFun-Resistors" deviceset="RESISTOR" device="0603" value="10K"/>
@@ -8102,46 +8155,54 @@ This is the mechanical footprint for a #4 phillips button head screw. Use the ke
 <part name="STANDOFF1" library="SparkFun-Electromechanical" deviceset="STAND-OFF" device=""/>
 <part name="STANDOFF2" library="SparkFun-Electromechanical" deviceset="STAND-OFF" device=""/>
 <part name="LOGO3" library="SparkFun-Aesthetics" deviceset="SFE_LOGO_FLAME" device=".1_INCH" value="SFE_LOGO_FLAME.1_INCH"/>
+<part name="R4" library="SparkFun-Resistors" deviceset="RESISTOR" device="0603" value="10K"/>
+<part name="SUPPLY5" library="SparkFun-Aesthetics" deviceset="VCC" device="" value="3.3V"/>
 </parts>
 <sheets>
 <sheet>
 <plain>
-<rectangle x1="107.188" y1="134.112" x2="110.998" y2="135.128" layer="94"/>
+<rectangle x1="97.028" y1="134.112" x2="100.838" y2="135.128" layer="94"/>
 <text x="161.798" y="110.236" size="1.778" layer="97">1</text>
 <text x="161.798" y="106.68" size="1.778" layer="97">0</text>
-<text x="15.24" y="17.78" size="1.778" layer="97">I2C ADDRESS SELECT (SJ2)
+<text x="147.32" y="68.58" size="1.778" layer="97">I2C ADDRESS SELECT (SJ2)
 
-VDD   100 1001 (0X49)
-NONE  011 1001 (0X39)
-GND   010 1001 (0X29)</text>
+VDD ("1")  100 1001 (0X49)
+NONE      011 1001 (0X39)
+GND ("0")  010 1001 (0X29)
+
+DO NOT SHORT BOTH SIDES</text>
 <text x="148.844" y="6.604" size="2.54" layer="94" ratio="10">M Grusin</text>
+<text x="48.26" y="132.08" size="1.778" layer="97">OPEN BOTH SIDES OF SJ1
+TO DISABLE I2C PULLUPS</text>
 </plain>
 <instances>
 <instance part="FRAME1" gate="G$1" x="0" y="0"/>
 <instance part="FRAME1" gate="G$2" x="147.32" y="0"/>
 <instance part="U1" gate="G$1" x="137.16" y="109.22"/>
-<instance part="SJ1" gate="G$1" x="109.22" y="134.62" smashed="yes" rot="R270">
-<attribute name="NAME" x="103.632" y="137.033" size="1.778" layer="95"/>
-<attribute name="VALUE" x="107.315" y="132.08" size="1.778" layer="96" rot="R270"/>
+<instance part="SJ1" gate="G$1" x="99.06" y="134.62" smashed="yes" rot="R270">
+<attribute name="NAME" x="93.472" y="137.033" size="1.778" layer="95"/>
+<attribute name="VALUE" x="97.155" y="132.08" size="1.778" layer="96" rot="R270"/>
 </instance>
 <instance part="SJ2" gate="G$1" x="165.1" y="109.22"/>
 <instance part="R1" gate="G$1" x="165.1" y="121.92" rot="R90"/>
-<instance part="R2" gate="G$1" x="104.14" y="124.46" rot="R90"/>
-<instance part="R3" gate="G$1" x="114.3" y="124.46" rot="R90"/>
+<instance part="R2" gate="G$1" x="93.98" y="124.46" rot="R90"/>
+<instance part="R3" gate="G$1" x="104.14" y="124.46" rot="R90"/>
 <instance part="C1" gate="G$1" x="177.8" y="111.76"/>
 <instance part="SUPPLY1" gate="1" x="154.94" y="129.54"/>
 <instance part="SUPPLY2" gate="1" x="165.1" y="129.54"/>
 <instance part="SUPPLY3" gate="1" x="177.8" y="129.54"/>
-<instance part="SUPPLY4" gate="1" x="109.22" y="142.24"/>
+<instance part="SUPPLY4" gate="1" x="99.06" y="142.24"/>
 <instance part="GND1" gate="1" x="165.1" y="96.52"/>
 <instance part="GND2" gate="1" x="177.8" y="96.52"/>
 <instance part="GND3" gate="1" x="154.94" y="96.52"/>
-<instance part="JP1" gate="G$1" x="55.88" y="109.22" rot="MR180"/>
+<instance part="JP1" gate="G$1" x="45.72" y="109.22" rot="MR180"/>
 <instance part="LOGO1" gate="G$1" x="132.08" y="12.7"/>
 <instance part="LOGO2" gate="G$1" x="241.3" y="30.48"/>
 <instance part="STANDOFF1" gate="G$1" x="246.38" y="25.4"/>
 <instance part="STANDOFF2" gate="G$1" x="241.3" y="25.4"/>
 <instance part="LOGO3" gate="G$1" x="127" y="20.32"/>
+<instance part="R4" gate="G$1" x="114.3" y="124.46" rot="R90"/>
+<instance part="SUPPLY5" gate="1" x="114.3" y="142.24"/>
 </instances>
 <busses>
 </busses>
@@ -8178,63 +8239,58 @@ GND   010 1001 (0X29)</text>
 <pinref part="GND3" gate="1" pin="GND"/>
 </segment>
 <segment>
-<pinref part="JP1" gate="G$1" pin="4"/>
-<wire x1="63.5" y1="106.68" x2="71.12" y2="106.68" width="0.1524" layer="91"/>
-<label x="71.12" y="106.68" size="1.27" layer="95" xref="yes"/>
+<pinref part="JP1" gate="G$1" pin="3"/>
+<wire x1="53.34" y1="109.22" x2="60.96" y2="109.22" width="0.1524" layer="91"/>
+<label x="60.96" y="109.22" size="1.27" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="N$8" class="0">
 <segment>
 <pinref part="R3" gate="G$1" pin="2"/>
 <pinref part="SJ1" gate="G$1" pin="1"/>
-<wire x1="114.3" y1="129.54" x2="114.3" y2="134.62" width="0.1524" layer="91"/>
+<wire x1="104.14" y1="129.54" x2="104.14" y2="134.62" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$9" class="0">
 <segment>
 <pinref part="R2" gate="G$1" pin="2"/>
 <pinref part="SJ1" gate="G$1" pin="3"/>
-<wire x1="104.14" y1="129.54" x2="104.14" y2="134.62" width="0.1524" layer="91"/>
+<wire x1="93.98" y1="129.54" x2="93.98" y2="134.62" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="SDA" class="0">
 <segment>
 <pinref part="JP1" gate="G$1" pin="1"/>
-<wire x1="63.5" y1="114.3" x2="71.12" y2="114.3" width="0.1524" layer="91"/>
-<label x="71.12" y="114.3" size="1.27" layer="95" xref="yes"/>
+<wire x1="53.34" y1="114.3" x2="60.96" y2="114.3" width="0.1524" layer="91"/>
+<label x="60.96" y="114.3" size="1.27" layer="95" xref="yes"/>
 </segment>
 <segment>
 <pinref part="R3" gate="G$1" pin="1"/>
-<wire x1="114.3" y1="119.38" x2="114.3" y2="111.76" width="0.1524" layer="91"/>
+<wire x1="104.14" y1="119.38" x2="104.14" y2="111.76" width="0.1524" layer="91"/>
 <pinref part="U1" gate="G$1" pin="SDA"/>
-<wire x1="114.3" y1="111.76" x2="121.92" y2="111.76" width="0.1524" layer="91"/>
-<wire x1="114.3" y1="111.76" x2="96.52" y2="111.76" width="0.1524" layer="91"/>
-<junction x="114.3" y="111.76"/>
-<label x="96.52" y="111.76" size="1.27" layer="95" rot="R180" xref="yes"/>
+<wire x1="104.14" y1="111.76" x2="121.92" y2="111.76" width="0.1524" layer="91"/>
+<wire x1="104.14" y1="111.76" x2="86.36" y2="111.76" width="0.1524" layer="91"/>
+<junction x="104.14" y="111.76"/>
+<label x="86.36" y="111.76" size="1.27" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="SCL" class="0">
 <segment>
 <pinref part="JP1" gate="G$1" pin="2"/>
-<wire x1="63.5" y1="111.76" x2="71.12" y2="111.76" width="0.1524" layer="91"/>
-<label x="71.12" y="111.76" size="1.27" layer="95" xref="yes"/>
+<wire x1="53.34" y1="111.76" x2="60.96" y2="111.76" width="0.1524" layer="91"/>
+<label x="60.96" y="111.76" size="1.27" layer="95" xref="yes"/>
 </segment>
 <segment>
 <pinref part="U1" gate="G$1" pin="SCL"/>
-<wire x1="121.92" y1="114.3" x2="104.14" y2="114.3" width="0.1524" layer="91"/>
+<wire x1="121.92" y1="114.3" x2="93.98" y2="114.3" width="0.1524" layer="91"/>
 <pinref part="R2" gate="G$1" pin="1"/>
-<wire x1="104.14" y1="114.3" x2="104.14" y2="119.38" width="0.1524" layer="91"/>
-<wire x1="104.14" y1="114.3" x2="96.52" y2="114.3" width="0.1524" layer="91"/>
-<junction x="104.14" y="114.3"/>
-<label x="96.52" y="114.3" size="1.27" layer="95" rot="R180" xref="yes"/>
+<wire x1="93.98" y1="114.3" x2="93.98" y2="119.38" width="0.1524" layer="91"/>
+<wire x1="93.98" y1="114.3" x2="86.36" y2="114.3" width="0.1524" layer="91"/>
+<junction x="93.98" y="114.3"/>
+<label x="86.36" y="114.3" size="1.27" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="3.3V" class="0">
-<segment>
-<pinref part="JP1" gate="G$1" pin="3"/>
-<wire x1="63.5" y1="109.22" x2="71.12" y2="109.22" width="0.1524" layer="91"/>
-<label x="71.12" y="109.22" size="1.27" layer="95" xref="yes"/>
-</segment>
 <segment>
 <pinref part="U1" gate="G$1" pin="VDD"/>
 <wire x1="152.4" y1="114.3" x2="154.94" y2="114.3" width="0.1524" layer="91"/>
@@ -8254,19 +8310,33 @@ GND   010 1001 (0X29)</text>
 <segment>
 <pinref part="SJ1" gate="G$1" pin="2"/>
 <pinref part="SUPPLY4" gate="1" pin="VCC"/>
-<wire x1="109.22" y1="142.24" x2="109.22" y2="139.7" width="0.1524" layer="91"/>
+<wire x1="99.06" y1="142.24" x2="99.06" y2="139.7" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="JP1" gate="G$1" pin="4"/>
+<wire x1="53.34" y1="106.68" x2="60.96" y2="106.68" width="0.1524" layer="91"/>
+<label x="60.96" y="106.68" size="1.27" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="R4" gate="G$1" pin="2"/>
+<pinref part="SUPPLY5" gate="1" pin="VCC"/>
+<wire x1="114.3" y1="142.24" x2="114.3" y2="129.54" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="INT" class="0">
 <segment>
 <pinref part="JP1" gate="G$1" pin="5"/>
-<wire x1="63.5" y1="104.14" x2="71.12" y2="104.14" width="0.1524" layer="91"/>
-<label x="71.12" y="104.14" size="1.27" layer="95" xref="yes"/>
+<wire x1="53.34" y1="104.14" x2="60.96" y2="104.14" width="0.1524" layer="91"/>
+<label x="60.96" y="104.14" size="1.27" layer="95" xref="yes"/>
 </segment>
 <segment>
 <pinref part="U1" gate="G$1" pin="INT"/>
-<wire x1="121.92" y1="104.14" x2="96.52" y2="104.14" width="0.1524" layer="91"/>
-<label x="96.52" y="104.14" size="1.27" layer="95" rot="R180" xref="yes"/>
+<wire x1="121.92" y1="104.14" x2="114.3" y2="104.14" width="0.1524" layer="91"/>
+<label x="86.36" y="104.14" size="1.27" layer="95" rot="R180" xref="yes"/>
+<pinref part="R4" gate="G$1" pin="1"/>
+<wire x1="114.3" y1="104.14" x2="86.36" y2="104.14" width="0.1524" layer="91"/>
+<wire x1="114.3" y1="119.38" x2="114.3" y2="104.14" width="0.1524" layer="91"/>
+<junction x="114.3" y="104.14"/>
 </segment>
 </net>
 </nets>
