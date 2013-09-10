@@ -36,6 +36,7 @@ local.properties
 # Ignore the board and schematic backup files
 *.b#?
 *.s#?
+*.epf
 
 
 #################
