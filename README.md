@@ -1,5 +1,6 @@
-BigTime Watch Kit
+TSL2561 Luminosity Sensor Breakout Board
 =================
+(Placeholder readme, to be updated)
 
 [![BigTime Watch Kit](https://dlnmh9ip6v2uc.cloudfront.net/images/products/1/1/1/7/8/Watch-01-Working\(Pathed\)_medium.jpg)  
 *BigTime Watch Kit (KIT-11178)*](https://www.sparkfun.com/products/11178)
