@@ -57,6 +57,24 @@ char SFE_TSL2561::readUInt(char address, unsigned int *value)
 	return(0);
 }
 
+
+//value is address of a short (16-bit) int
+char SFE_TSL2561::writeUInt(char address, unsigned int value)
+{
+	unsigned char data[3];
+
+	data[0] = address;
+	data[1] = (unsigned char)(value & 0x00FF);
+	//Serial.println(data[1],HEX);
+	data[2] = (unsigned char)((value >> 8) & 0x00FF);
+	//Serial.println(data[2],HEX);
+	if (writeBytes(data,3))
+		return(1);
+
+	return(0);
+}
+
+
 //values is an array of char, first entry should be the register to read from
 //subsequent entries will be filled with return values
 char SFE_TSL2561::readBytes(unsigned char *values, char length)
@@ -65,7 +83,7 @@ char SFE_TSL2561::readBytes(unsigned char *values, char length)
 
 	Wire.beginTransmission(_i2c_address);
 	Wire.write(values[0]);
-	if (Wire.endTransmission() == 0);
+	if (Wire.endTransmission(false) == 0);
 	{
 		Wire.requestFrom(_i2c_address,length);
 		while(Wire.available() != length) ; // wait until bytes are ready
@@ -86,10 +104,10 @@ char SFE_TSL2561::writeBytes(unsigned char *values, char length)
 	
 	Wire.beginTransmission(_i2c_address);
 	Wire.write(values,length);
-	if (Wire.endTransmission() == 0)
+	if (Wire.endTransmission(true) == 0)
 		return(1);
-	else
-		return(0);
+
+	return(0);
 }
 
 //char SFE_TSL2561::getReg(char address, char *value)
@@ -123,7 +141,7 @@ char SFE_TSL2561::clearInterrupt(void)
 char SFE_TSL2561::setPowerUp(void)
 {
 	unsigned char data[2];
-	data[0] = 0xC0; data[1] = 0x03;
+	data[0] = 0x80; data[1] = 0x03;
 	if (writeBytes(data,2))
 		return(1);
 	else
@@ -133,20 +151,20 @@ char SFE_TSL2561::setPowerUp(void)
 char SFE_TSL2561::setPowerDown(void)
 {
 	unsigned char data[2];
-	data[0] = 0xC0; data[1] = 0x00;
+	data[0] = 0x80; data[1] = 0x00;
 	if (writeBytes(data,2))
 		return(1);
 	else
 		return(0);
 }
 
-char SFE_TSL2561::getStatus(boolean *status)
+char SFE_TSL2561::getStatus(boolean &status)
 {
 	unsigned char data[1];
 	data[0] = 0x80;
 	if (readBytes(data,1))
 	{
-		status[0] = ((data[0] & 0x03) == 0x03);
+		status = ((data[0] & 0x03) == 0x03);
 		return(1);
 	}
 	else
@@ -154,28 +172,121 @@ char SFE_TSL2561::getStatus(boolean *status)
 }
 
 
+char SFE_TSL2561::setGain(boolean gain)
+{
+	unsigned char data[2], timing;
+	
+	// Get timing register 0x01
+
+	data[0] = 0x81;
+	if (readBytes(data,1))
+	{
+		timing = data[0];
+
+		if (gain)
+			timing |= 0x10;
+		else
+			timing &= ~0x10;
+
+		data[0] = 0x81; data[1] = timing;
+
+		if (writeBytes(data,2))
+			return(1);
+	}
+	return(0);
+}
+
+
+char SFE_TSL2561::manualStart(void)
+	// command TSL2561 to start a pressure measurement
+	// oversampling: 0 - 3 for oversampling value
+	// returns n (number of ms to wait) for success, 0 for fail
+{
+	unsigned char data[2], timing;
+	
+	// Get timing register 0x01
+
+	data[0] = 0x81;
+	if (readBytes(data,1))
+	{
+		timing = data[0];
+
+		timing |= 0x08;
+
+		data[0] = 0x81; data[1] = timing;
+
+		if (writeBytes(data,2))
+			return(1);
+	}
+	return(0);
+}
+
+
+char SFE_TSL2561::manualStop(void)
+	// command TSL2561 to start a pressure measurement
+	// oversampling: 0 - 3 for oversampling value
+	// returns n (number of ms to wait) for success, 0 for fail
+{
+	unsigned char data[2], timing;
+	
+	// Get timing register 0x01
+
+	data[0] = 0x81;
+	if (readBytes(data,1))
+	{
+		timing = data[0];
+
+		timing &= ~0x08;
+
+		data[0] = 0x81; data[1] = timing;
+
+		if (writeBytes(data,2))
+			return(1);
+	}
+	return(0);
+}
+
+
+char SFE_TSL2561::setIntegrationTime(unsigned char time)
+	// time = 0 to 3
+	// oversampling: 0 - 3 for oversampling value
+	// returns n (number of ms to wait) for success, 0 for fail
+{
+	unsigned char data[2], timing;
+	
+	// Get timing register 0x01
+
+	data[0] = 0x81;
+	if (readBytes(data,1))
+	{
+		timing = data[0];
+
+		timing &= ~0x03;
+		timing |= (time & 0x03);
+
+		data[0] = 0x81; data[1] = timing;
+
+		if (writeBytes(data,2))
+			return(1);
+	}
+	
+	return(0);
+}
+
+
+char SFE_TSL2561::setInterruptThresholdLow(unsigned int threshold)
+	// time = 0 to 3
+	// oversampling: 0 - 3 for oversampling value
+	// returns n (number of ms to wait) for success, 0 for fail
+{
+	if (writeUInt(0x82,threshold))
+		return(1);
+		
+	return(0);
+}
+
 
 /*
-		char setGain(boolean gain);
-			// command TSL2561 to start a pressure measurement
-			// oversampling: 0 - 3 for oversampling value
-			// returns n (number of ms to wait) for success, 0 for fail
-
-		char setManualStart(void);
-			// command TSL2561 to start a pressure measurement
-			// oversampling: 0 - 3 for oversampling value
-			// returns n (number of ms to wait) for success, 0 for fail
-
-		char setIntegrationTime(unsigned char time);
-			// command TSL2561 to start a pressure measurement
-			// oversampling: 0 - 3 for oversampling value
-			// returns n (number of ms to wait) for success, 0 for fail
-
-		char setInterruptThresholdLow(unsigned int threshold);
-			// command TSL2561 to start a pressure measurement
-			// oversampling: 0 - 3 for oversampling value
-			// returns n (number of ms to wait) for success, 0 for fail
-
 		char setInterruptThresholdHigh(unsigned int threshold);
 			// command TSL2561 to start a pressure measurement
 			// oversampling: 0 - 3 for oversampling value
@@ -187,17 +298,18 @@ char SFE_TSL2561::getStatus(boolean *status)
 			// returns n (number of ms to wait) for success, 0 for fail
 */
 
-char SFE_TSL2561::getID(char *ID)
+char SFE_TSL2561::getID(char &ID)
 {
 	unsigned char data[1];
+	
 	data[0] = 0x8A;
 	if (readBytes(data,1))
 	{
-		ID[0] = data[0];
+		ID = data[0];
 		return(1);
 	}
-	else
-		return(0);
+	
+	return(0);
 }
 
 /*

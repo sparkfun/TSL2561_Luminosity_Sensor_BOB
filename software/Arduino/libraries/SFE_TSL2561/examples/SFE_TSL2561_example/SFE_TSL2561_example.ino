@@ -57,7 +57,7 @@ void setup()
 {
   char ID;
   boolean state;
-  
+  unsigned char array[2];
   // Initialize part
   
   Serial.begin(9600);
@@ -76,29 +76,181 @@ void setup()
   // Get ID number from part
   // (just for fun, you don't need to do this to operate the part)
 
-  if (light.getID(&ID))
+  if (light.getID(ID))
   {
     Serial.print("Got part ID: 0X");
     Serial.print(ID,HEX);
-    Serial.println(", should be 0X5?");
+    Serial.println(", should be 0X5X");
   }
   else
   {
     Serial.println("Error, couldn't retrieve part ID\n\n");
     while(1); // Pause forever.
   }
+  
+  // POWER UP AND DOWN
 
-  Serial.println("powerup...");
-  light.setPowerUp();
-  Serial.print("getStatus: ");
-  light.getStatus(&state);
-  Serial.println(state);
 
   Serial.println("powerdown...");
   light.setPowerDown();
   Serial.print("getStatus: ");
-  light.getStatus(&state);
+  light.getStatus(state);
   Serial.println(state);
+
+  Serial.println("powerup...");
+  light.setPowerUp();
+  Serial.print("getStatus: ");
+  light.getStatus(state);
+  Serial.println(state);
+
+
+  // SET GAIN
+
+  Serial.println();
+
+  Serial.print("timing: ");
+  array[0] = 0x81;
+  light.readBytes(array, 1);
+  printBinary(array[0]);
+  Serial.println();
+
+  Serial.println("setGain 0");
+  light.setGain(0);
+
+  Serial.print("timing: ");
+  array[0] = 0x81;
+  light.readBytes(array, 1);
+  printBinary(array[0]);
+  Serial.println();
+
+  Serial.println("setGain 1");
+  light.setGain(1);
+
+  Serial.print("timing: ");
+  array[0] = 0x81;
+  light.readBytes(array, 1);
+  printBinary(array[0]);
+  Serial.println();
+
+  Serial.println();
+
+  // MANUAL START AND STOP
+
+  Serial.print("timing: ");
+  array[0] = 0x81;
+  light.readBytes(array, 1);
+  printBinary(array[0]);
+  Serial.println();
+
+  Serial.println("manualStart");
+  light.manualStart();
+
+  Serial.print("timing: ");
+  array[0] = 0x81;
+  light.readBytes(array, 1);
+  printBinary(array[0]);
+  Serial.println();
+
+  Serial.println("manualStop");
+  light.manualStop();
+
+  Serial.print("timing: ");
+  array[0] = 0x81;
+  light.readBytes(array, 1);
+  printBinary(array[0]);
+  Serial.println();
+
+  // INTEGRATION TIME
+
+  Serial.println();
+
+  Serial.println("IT = 0");
+  light.setIntegrationTime(0x00);
+
+  Serial.print("timing: ");
+  array[0] = 0x81;
+  light.readBytes(array, 1);
+  printBinary(array[0]);
+  Serial.println();
+
+  Serial.println("IT = 1");
+  light.setIntegrationTime(0x01);
+
+  Serial.print("timing: ");
+  array[0] = 0x81;
+  light.readBytes(array, 1);
+  printBinary(array[0]);
+  Serial.println();
+
+  Serial.println("IT = 2");
+  light.setIntegrationTime(0x02);
+
+  Serial.print("timing: ");
+  array[0] = 0x81;
+  light.readBytes(array, 1);
+  printBinary(array[0]);
+  Serial.println();
+
+  Serial.println("IT = 3");
+  light.setIntegrationTime(0x03);
+
+  Serial.print("timing: ");
+  array[0] = 0x81;
+  light.readBytes(array, 1);
+  printBinary(array[0]);
+  Serial.println();
+
+  // int threshold low
+
+
+
+  Serial.println();
+
+  array[0] = 0x93;
+  array[1] = 0xAB;
+  array[2] = 0xCD;
+  Serial.print("writebytes: ");
+  Serial.println(light.writeBytes(array,2),HEX);
+
+  Serial.print("threshold low: ");
+  array[0] = 0x82;
+  light.readBytes(array, 2);
+  Serial.print(array[0],HEX);
+  Serial.print(" ");
+  Serial.print(array[1],HEX);
+  Serial.println();
+
+  
+//  Serial.println("IT = 0x1234");
+//  light.setInterruptThresholdLow((unsigned int)0x1234);
+//
+//  Serial.print("threshold low: ");
+//  array[0] = 0x82;
+//  light.readBytes(array, 2);
+//  Serial.print(array[0],HEX);
+//  Serial.print(" ");
+//  Serial.print(array[1],HEX);
+//  Serial.println();
+  
+//  Serial.println("IT = 0x1234");
+//  light.setInterruptThresholdLow(0x1234);
+
+//  array[0] = 0x82;
+//  array[1] = 0x12;
+//  array[2] = 0x34;
+//  Serial.print("writebytes: ");
+//  Serial.println(light.writeBytes(array,3),HEX);
+//
+//  Serial.print("threshold low: ");
+//  array[0] = 0x82;
+//  light.readBytes(array, 2);
+//  Serial.print(array[0],HEX);
+//  Serial.print(" ");
+//  Serial.print(array[1],HEX);
+//  Serial.println();
+
+  readAll();
+
 }
 
 void loop()
@@ -107,3 +259,42 @@ void loop()
   
   
 }
+
+void printBinary(byte x)
+// Utility routine to print a number (8 bits) in binary
+{
+  char y;
+  
+  // Step through all eight bits, MSB to LSB
+  for (y = 7; y >= 0; y--)
+  {
+    // Print a space between the upper and lower nybbles
+    if (y == 3) Serial.print(" ");
+    
+    // Check if the bit is a 1 or 0 and print that out
+    if (x & (1 << y)) Serial.print("1"); else Serial.print("0");
+  }
+}
+
+
+void readAll()
+{
+  unsigned char array[16];
+
+  array[0] = 0x80;
+  light.readBytes(array,16);
+  
+  Serial.println();
+  for (int x = 0; x < 16; x++)
+  {
+    Serial.print(x,HEX);
+    Serial.print(" ");
+    Serial.print(array[x],HEX);
+    Serial.print(" ");
+    printBinary(array[x]);
+    Serial.println();
+  }
+  Serial.println();
+}
+
+

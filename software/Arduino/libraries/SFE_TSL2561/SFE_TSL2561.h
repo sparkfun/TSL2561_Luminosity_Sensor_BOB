@@ -36,28 +36,33 @@ class SFE_TSL2561
 		char setPowerDown(void);
 			// command TSL2561 to start a temperature measurement
 			// returns n (number of ms to wait) for success, 0 for fail
-//
-		char getStatus(boolean *status);
+
+		char getStatus(boolean &status);
 			// return temperature measurement from previous startTemperature command
 			// places returned value in T variable (deg C)
 			// returns 1 for success, 0 for fail
+
+		char setGain(boolean gain);
+			// command TSL2561 to start a pressure measurement
+			// oversampling: 0 - 3 for oversampling value
+			// returns n (number of ms to wait) for success, 0 for fail
+
+		char manualStart(void);
+			// command TSL2561 to start a pressure measurement
+			// oversampling: 0 - 3 for oversampling value
+			// returns n (number of ms to wait) for success, 0 for fail
+
+		char manualStop(void);
+			// command TSL2561 to start a pressure measurement
+			// oversampling: 0 - 3 for oversampling value
+			// returns n (number of ms to wait) for success, 0 for fail
+
+		char setIntegrationTime(unsigned char time);
+			// command TSL2561 to start a pressure measurement
+			// oversampling: 0 - 3 for oversampling value
+			// returns n (number of ms to wait) for success, 0 for fail
 //
-//		char setGain(boolean gain);
-//			// command TSL2561 to start a pressure measurement
-//			// oversampling: 0 - 3 for oversampling value
-//			// returns n (number of ms to wait) for success, 0 for fail
-//
-//		char setManualStart(void);
-//			// command TSL2561 to start a pressure measurement
-//			// oversampling: 0 - 3 for oversampling value
-//			// returns n (number of ms to wait) for success, 0 for fail
-//
-//		char setIntegrationTime(unsigned char time);
-//			// command TSL2561 to start a pressure measurement
-//			// oversampling: 0 - 3 for oversampling value
-//			// returns n (number of ms to wait) for success, 0 for fail
-//
-//		char setInterruptThresholdLow(unsigned int threshold);
+		char setInterruptThresholdLow(unsigned int threshold);
 //			// command TSL2561 to start a pressure measurement
 //			// oversampling: 0 - 3 for oversampling value
 //			// returns n (number of ms to wait) for success, 0 for fail
@@ -72,7 +77,7 @@ class SFE_TSL2561
 //			// oversampling: 0 - 3 for oversampling value
 //			// returns n (number of ms to wait) for success, 0 for fail
 //
-		char getID(char *ID);
+		char getID(char &ID);
 			// command TSL2561 to start a pressure measurement
 			// oversampling: 0 - 3 for oversampling value
 			// returns n (number of ms to wait) for success, 0 for fail
@@ -89,9 +94,9 @@ class SFE_TSL2561
 //
 //		char getLux();
 
-	private:
+//	private:
 	
-		char getReg(char address, char *result);
+//		char getReg(char address, char *result);
 
 	
 		char readInt(char address, int *value);
@@ -105,6 +110,8 @@ class SFE_TSL2561
 			// address: TSL2561 register address
 			// *value: pointer to unsigned int for returned value (16 bits)
 			// returns 1 for success, 0 for fail, with read value(s) in *value
+
+		char writeUInt(char address, unsigned int value);
 
 		char readBytes(unsigned char *values, char length);
 			// read a number of bytes from a TSL2561 register
