@@ -55,7 +55,7 @@ SFE_TSL2561 light(TSL2561_ADDR);
 
 void setup()
 {
-  char ID;
+  unsigned char ID;
   boolean state;
   unsigned char array[2];
   // Initialize part
@@ -103,6 +103,8 @@ void setup()
   light.getStatus(state);
   Serial.println(state);
 
+  
+  
 
   // SET GAIN
 
@@ -202,55 +204,33 @@ void setup()
 
   // int threshold low
 
-
+  unsigned int myuint;
 
   Serial.println();
+  light.setInterruptThreshold(0x0123,0xABCD);
 
-  array[0] = 0x93;
-  array[1] = 0xAB;
-  array[2] = 0xCD;
-  Serial.print("writebytes: ");
-  Serial.println(light.writeBytes(array,2),HEX);
+  light.readUInt(2,myuint);
+  Serial.println(myuint,HEX);
+  
+  light.readUInt(4,myuint);
+  Serial.println(myuint,HEX);
 
-  Serial.print("threshold low: ");
-  array[0] = 0x82;
-  light.readBytes(array, 2);
-  Serial.print(array[0],HEX);
-  Serial.print(" ");
-  Serial.print(array[1],HEX);
+  // INT CTL
+  unsigned char mybyte;
+
+  Serial.print("control: ");
+  light.readByte(6,mybyte);
+  printBinary(mybyte);
   Serial.println();
 
-  
-//  Serial.println("IT = 0x1234");
-//  light.setInterruptThresholdLow((unsigned int)0x1234);
-//
-//  Serial.print("threshold low: ");
-//  array[0] = 0x82;
-//  light.readBytes(array, 2);
-//  Serial.print(array[0],HEX);
-//  Serial.print(" ");
-//  Serial.print(array[1],HEX);
-//  Serial.println();
-  
-//  Serial.println("IT = 0x1234");
-//  light.setInterruptThresholdLow(0x1234);
+  light.setInterruptControl(0xFF,0xFF); 
 
-//  array[0] = 0x82;
-//  array[1] = 0x12;
-//  array[2] = 0x34;
-//  Serial.print("writebytes: ");
-//  Serial.println(light.writeBytes(array,3),HEX);
-//
-//  Serial.print("threshold low: ");
-//  array[0] = 0x82;
-//  light.readBytes(array, 2);
-//  Serial.print(array[0],HEX);
-//  Serial.print(" ");
-//  Serial.print(array[1],HEX);
-//  Serial.println();
+  Serial.print("control: ");
+  light.readByte(6,mybyte);
+  printBinary(mybyte);
+  Serial.println();
 
   readAll();
-
 }
 
 void loop()

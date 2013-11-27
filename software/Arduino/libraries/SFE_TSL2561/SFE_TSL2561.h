@@ -62,7 +62,7 @@ class SFE_TSL2561
 			// oversampling: 0 - 3 for oversampling value
 			// returns n (number of ms to wait) for success, 0 for fail
 //
-		char setInterruptThresholdLow(unsigned int threshold);
+		char setInterruptThreshold(unsigned int low, unsigned int high);
 //			// command TSL2561 to start a pressure measurement
 //			// oversampling: 0 - 3 for oversampling value
 //			// returns n (number of ms to wait) for success, 0 for fail
@@ -72,12 +72,12 @@ class SFE_TSL2561
 //			// oversampling: 0 - 3 for oversampling value
 //			// returns n (number of ms to wait) for success, 0 for fail
 //
-//		char setInterruptConfig(unsigned char control, unsigned char persist);
+		char setInterruptControl(unsigned char control, unsigned char persist);
 //			// command TSL2561 to start a pressure measurement
 //			// oversampling: 0 - 3 for oversampling value
 //			// returns n (number of ms to wait) for success, 0 for fail
 //
-		char getID(char &ID);
+		char getID(unsigned char &ID);
 			// command TSL2561 to start a pressure measurement
 			// oversampling: 0 - 3 for oversampling value
 			// returns n (number of ms to wait) for success, 0 for fail
@@ -98,34 +98,28 @@ class SFE_TSL2561
 	
 //		char getReg(char address, char *result);
 
-	
-		char readInt(char address, int *value);
-			// read an signed int (16 bits) from a TSL2561 register
-			// address: TSL2561 register address
-			// *value: pointer to signed int for returned value (16 bits)
-			// returns 1 for success, 0 for fail, with read value(s) in *value
+		char writeByte(unsigned char address, unsigned char value);
 
-		char readUInt(char address, unsigned int *value);
+		char readByte(unsigned char address, unsigned char &value);
+	
+		char readUInt(unsigned char address, unsigned int &value);
 			// read an unsigned int (16 bits) from a TSL2561 register
 			// address: TSL2561 register address
 			// *value: pointer to unsigned int for returned value (16 bits)
 			// returns 1 for success, 0 for fail, with read value(s) in *value
 
-		char writeUInt(char address, unsigned int value);
+		char writeUInt(unsigned char address, unsigned int value);
 
-		char readBytes(unsigned char *values, char length);
+		char readBytes(unsigned char *values, unsigned int length);
 			// read a number of bytes from a TSL2561 register
 			// values: array of char with register address in first location [0]
 			// length: number of bytes to read back
 			// returns 1 for success, 0 for fail, with read bytes in values[] array
 			
-		char writeBytes(unsigned char *values, char length);
-			// write a number of bytes to a TSL2561 register (and consecutive subsequent registers)
-			// values: array of char with register address in first location [0]
-			// length: number of bytes to write
-			// returns 1 for success, 0 for fail
-			
+		char getError();
+
 		char _i2c_address;
+		char _error;
 
 };
 
