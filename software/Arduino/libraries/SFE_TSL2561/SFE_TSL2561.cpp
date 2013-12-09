@@ -1,67 +1,337 @@
 /*
-  SFE_TSL2561 illumination sensor library for Arduino
+	SFE_TSL2561 illumination sensor library for Arduino
+	Mike Grusin, SparkFun Electronics
 	
-  Mike Grusin
-  http://www.sparkfun.com
+	This library provides functions to access the TAOS TSL2561
+	Illumination Sensor.
 	
-	version 1.0 2013/10/25 initial version
-*/
+	Our example code uses the "beerware" license. You can do anything
+	you like with this code. No really, anything. If you find it useful,
+	buy me a beer someday.
 
+	version 1.0 2013/09/20 MDG initial version
+*/
 
 #include <SFE_TSL2561.h>
 #include <Wire.h>
-//#include <stdio.h>
-//#include <math.h>
+
 
 SFE_TSL2561::SFE_TSL2561(char i2c_address)
+	// Library object
 {
+	// Set address for subsequent commands
 	_i2c_address = i2c_address;
-//	Wire.begin();
 }
 
+
 char SFE_TSL2561::begin()
+	// Initialize library 
 {
 	Wire.begin();
-		
 	return(1);
 }
 
-//value is address of a short (16-bit) int
-char SFE_TSL2561::readBytes(unsigned char *values, unsigned int length)
-//values is an array of char, first entry should be the register to read from
-//subsequent entries will be filled with return values
-//char SFE_TSL2561::readBytes(unsigned char *values, char length)
+
+char SFE_TSL2561::setPowerUp(void)
+	// Turn on TSL2561, begin integrations
+	// Returns true (1) if successful, false (0) if there was an I2C error
+	// (Also see getError() below)
 {
-	unsigned int x;
-	
-	Wire.beginTransmission(_i2c_address);
-	Wire.write((values[0] & 0x0F) | 0x80);
-	_error = Wire.endTransmission();
-	if (_error == 0)
+	// Write 0x03 to command byte (power on)
+	return(writeByte(TSL2561_REG_CONTROL,0x03));
+}
+
+
+char SFE_TSL2561::setPowerDown(void)
+	// Turn off TSL2561
+	// Returns true (1) if successful, false (0) if there was an I2C error
+	// (Also see getError() below)
+{
+	// Clear command byte (power off)
+	return(writeByte(TSL2561_REG_CONTROL,0x00));
+}
+
+
+char SFE_TSL2561::setTiming(boolean gain, unsigned char time)
+	// If gain = false (0), device is set to low gain (1X)
+	// If gain = high (1), device is set to high gain (16X)
+	// If time = 0, integration will be 13.7ms
+	// If time = 1, integration will be 101ms
+	// If time = 2, integration will be 402ms
+	// If time = 3, use manual start / stop
+	// Returns true (1) if successful, false (0) if there was an I2C error
+	// (Also see getError() below)
+{
+	unsigned char timing;
+
+	// Get timing byte
+	if (readByte(TSL2561_REG_TIMING,timing))
 	{
-		Wire.requestFrom(_i2c_address,length);
-		if (Wire.available() == length)
-		{
-			for(x = 0; x < length; x++)
-			{
-				values[x] = Wire.read();
-			}
+		// Set gain (0 or 1)
+		if (gain)
+			timing |= 0x10;
+		else
+			timing &= ~0x10;
+
+		// Set integration time (0 to 3)
+		timing &= ~0x03;
+		timing |= (time & 0x03);
+
+		// Write modified timing byte back to device
+		if (writeByte(TSL2561_REG_TIMING,timing))
 			return(1);
+	}
+	return(0);
+}
+
+
+char SFE_TSL2561::setTiming(boolean gain, unsigned char time, unsigned int &ms)
+	// If gain = false (0), device is set to low gain (1X)
+	// If gain = high (1), device is set to high gain (16X)
+	// If time = 0, integration will be 13.7ms
+	// If time = 1, integration will be 101ms
+	// If time = 2, integration will be 402ms
+	// If time = 3, use manual start / stop (ms = 0)
+	// ms will be set to integration time
+	// Returns true (1) if successful, false (0) if there was an I2C error
+	// (Also see getError() below)
+{
+	// Calculate ms for user
+	switch (time)
+	{
+		case 0: ms = 14; break;
+		case 1: ms = 101; break;
+		case 2: ms = 402; break;
+		default: ms = 0;
+	}
+	// Set integration using base function
+	return(setTiming(gain,time));
+}
+
+
+char SFE_TSL2561::manualStart(void)
+	// Starts a manual integration period
+	// After running this command, you must manually stop integration with manualStop()
+	// Internally sets integration time to 3 for manual integration (gain is unchanged)
+	// Returns true (1) if successful, false (0) if there was an I2C error
+	// (Also see getError() below)
+{
+	unsigned char timing;
+	
+	// Get timing byte
+	if (readByte(TSL2561_REG_TIMING,timing))
+	{
+		// Set integration time to 3 (manual integration)
+		timing |= 0x03;
+
+		if (writeByte(TSL2561_REG_TIMING,timing))
+		{
+			// Begin manual integration
+			timing |= 0x08;
+
+			// Write modified timing byte back to device
+			if (writeByte(TSL2561_REG_TIMING,timing))
+				return(1);
 		}
 	}
 	return(0);
 }
 
 
-//value is address of a short (16-bit) int
-char SFE_TSL2561::readByte(unsigned char address, unsigned char &value)
-//values is an array of char, first entry should be the register to read from
-//subsequent entries will be filled with return values
-//char SFE_TSL2561::readBytes(unsigned char *values, char length)
+char SFE_TSL2561::manualStop(void)
+	// Stops a manual integration period
+	// Returns true (1) if successful, false (0) if there was an I2C error
+	// (Also see getError() below)
 {
+	unsigned char timing;
+	
+	// Get timing byte
+	if (readByte(TSL2561_REG_TIMING,timing))
+	{
+		// Stop manual integration
+		timing &= ~0x08;
+
+		// Write modified timing byte back to device
+		if (writeByte(TSL2561_REG_TIMING,timing))
+			return(1);
+	}
+	return(0);
+}
+
+
+char SFE_TSL2561::getData(unsigned int &data0, unsigned int &data1)
+	// Retrieve raw integration results
+	// data0 and data1 will be set to integration results
+	// Returns true (1) if successful, false (0) if there was an I2C error
+	// (Also see getError() below)
+{
+	// Get data0 and data1 out of result registers
+	if (readUInt(TSL2561_REG_DATA_0,data0) && readUInt(TSL2561_REG_DATA_1,data1)) 
+		return(1);
+
+	return(0);
+}
+
+
+char SFE_TSL2561::getLux(unsigned char gain, unsigned int ms, unsigned int CH0, unsigned int CH1, double &lux)
+	// Convert raw data to lux
+	// gain: 0 (1X) or 1 (16X), see setTiming()
+	// ms: integration time in ms, from setTiming() or from manual integration
+	// CH0, CH1: results from getData()
+	// lux will be set to resulting lux calculation
+	// returns true (1) if calculation was successful
+	// RETURNS false (0) AND lux = 0.0 IF EITHER SENSOR WAS SATURATED (0XFFFF)
+{
+	double ratio, d0, d1;
+
+	// Determine if either sensor saturated (0xFFFF)
+	// If so, abandon ship (calculation will not be accurate)
+	if ((CH0 == 0xFFFF) || (CH1 == 0xFFFF))
+	{
+		lux = 0.0;
+		return(false);
+	}
+
+	// Convert from unsigned integer to floating point
+	d0 = CH0; d1 = CH1;
+
+	// We will need the ratio for subsequent calculations
+	ratio = d1 / d0;
+
+	// Normalize for integration time
+	d0 *= (402.0/ms);
+	d1 *= (402.0/ms);
+
+	// Normalize for gain
+	if (gain)
+	{
+		d0 /= 16;
+		d1 /= 16;
+	}
+
+	// Determine lux per datasheet equations:
+	
+	if (ratio < 0.5)
+	{
+		lux = 0.0304 * d0 - 0.062 * d0 * pow(ratio,1.4);
+		return(true);
+	}
+
+	if (ratio < 0.61)
+	{
+		lux = 0.0224 * d0 - 0.031 * d1;
+		return(true);
+	}
+
+	if (ratio < 0.80)
+	{
+		lux = 0.0128 * d0 - 0.0153 * d1;
+		return(true);
+	}
+
+	if (ratio < 1.30)
+	{
+		lux = 0.00146 * d0 - 0.00112 * d1;
+		return(true);
+	}
+
+	// if (ratio > 1.30)
+	lux = 0.0;
+	return(true);
+}
+
+
+char SFE_TSL2561::setInterruptControl(unsigned char control, unsigned char persist)
+	// Sets up interrupt operations
+	// If control = 0, interrupt output disabled
+	// If control = 1, use level interrupt, see setInterruptThreshold()
+	// If persist = 0, every integration cycle generates an interrupt
+	// If persist = 1, any value outside of threshold generates an interrupt
+	// If persist = 2 to 15, value must be outside of threshold for 2 to 15 integration cycles
+	// Returns true (1) if successful, false (0) if there was an I2C error
+	// (Also see getError() below)
+{
+	// Place control and persist bits into proper location in interrupt control register
+	if (writeByte(TSL2561_REG_INTCTL,((control | 0B00000011) << 4) & (persist | 0B00001111)))
+		return(1);
+		
+	return(0);
+}
+
+
+char SFE_TSL2561::setInterruptThreshold(unsigned int low, unsigned int high)
+	// Set interrupt thresholds (channel 0 only)
+	// low, high: 16-bit threshold values
+	// Returns true (1) if successful, false (0) if there was an I2C error
+	// (Also see getError() below)
+{
+	// Write low and high threshold values
+	if (writeUInt(TSL2561_REG_THRESH_L,low) && writeUInt(TSL2561_REG_THRESH_H,high))
+		return(1);
+		
+	return(0);
+}
+
+
+char SFE_TSL2561::clearInterrupt(void)
+	// Clears an active interrupt
+	// Returns true (1) if successful, false (0) if there was an I2C error
+	// (Also see getError() below)
+{
+	// Set up command byte for interrupt clear
 	Wire.beginTransmission(_i2c_address);
-	Wire.write((address & 0x0F) | 0x80);
+	Wire.write(TSL2561_CMD_CLEAR);
 	_error = Wire.endTransmission();
+	if (_error == 0)
+		return(1);
+
+	return(0);
+}
+
+
+char SFE_TSL2561::getID(unsigned char &ID)
+	// Retrieves part and revision code from TSL2561
+	// Sets ID to part ID (see datasheet)
+	// Returns true (1) if successful, false (0) if there was an I2C error
+	// (Also see getError() below)
+{
+	unsigned char timing;
+	
+	// Get ID byte from ID register
+	if (readByte(TSL2561_REG_ID,ID))
+		return(1);
+
+	return(0);
+}
+
+
+char SFE_TSL2561::getError()
+	// If any library command fails, you can retrieve an extended
+	// error code using this command. Errors are from the wire library: 
+	// 0 = Success
+	// 1 = Data too long to fit in transmit buffer
+	// 2 = Received NACK on transmit of address
+	// 3 = Received NACK on transmit of data
+	// 4 = Other error
+{
+	return(_error);
+}
+
+// Private functions:
+
+char SFE_TSL2561::readByte(unsigned char address, unsigned char &value)
+	// Reads a byte from a TSL2561 address
+	// Address: TSL2561 address (0 to 15)
+	// Value will be set to stored byte
+	// Returns true (1) if successful, false (0) if there was an I2C error
+	// (Also see getError() above)
+{
+	// Set up command byte for read
+	Wire.beginTransmission(_i2c_address);
+	Wire.write((address & 0x0F) | TSL2561_CMD);
+	_error = Wire.endTransmission();
+
+	// Read requested byte
 	if (_error == 0)
 	{
 		Wire.requestFrom(_i2c_address,1);
@@ -76,9 +346,16 @@ char SFE_TSL2561::readByte(unsigned char address, unsigned char &value)
 
 
 char SFE_TSL2561::writeByte(unsigned char address, unsigned char value)
+	// Write a byte to a TSL2561 address
+	// Address: TSL2561 address (0 to 15)
+	// Value: byte to write to address
+	// Returns true (1) if successful, false (0) if there was an I2C error
+	// (Also see getError() above)
 {
+	// Set up command byte for write
 	Wire.beginTransmission(_i2c_address);
-	Wire.write((address & 0x0F) | 0x80);
+	Wire.write((address & 0x0F) | TSL2561_CMD);
+	// Write byte
 	Wire.write(value);
 	_error = Wire.endTransmission();
 	if (_error == 0)
@@ -88,14 +365,21 @@ char SFE_TSL2561::writeByte(unsigned char address, unsigned char value)
 }
 
 
-//value is address of a short (16-bit) int
 char SFE_TSL2561::readUInt(unsigned char address, unsigned int &value)
+	// Reads an unsigned integer (16 bits) from a TSL2561 address (low byte first)
+	// Address: TSL2561 address (0 to 15), low byte first
+	// Value will be set to stored unsigned integer
+	// Returns true (1) if successful, false (0) if there was an I2C error
+	// (Also see getError() above)
 {
 	char high, low;
 	
+	// Set up command byte for read
 	Wire.beginTransmission(_i2c_address);
-	Wire.write((address & 0x0F) | 0x80);
+	Wire.write((address & 0x0F) | TSL2561_CMD);
 	_error = Wire.endTransmission();
+
+	// Read two bytes (low and high)
 	if (_error == 0)
 	{
 		Wire.requestFrom(_i2c_address,2);
@@ -103,277 +387,26 @@ char SFE_TSL2561::readUInt(unsigned char address, unsigned int &value)
 		{
 			low = Wire.read();
 			high = Wire.read();
+			// Combine bytes into unsigned int
 			value = word(high,low);
 			return(1);
 		}
-	}
+	}	
 	return(0);
 }
 
 
-//value is address of a short (16-bit) int
 char SFE_TSL2561::writeUInt(unsigned char address, unsigned int value)
+	// Write an unsigned integer (16 bits) to a TSL2561 address (low byte first)
+	// Address: TSL2561 address (0 to 15), low byte first
+	// Value: unsigned int to write to address
+	// Returns true (1) if successful, false (0) if there was an I2C error
+	// (Also see getError() above)
 {
-  if (writeByte(address,lowByte(value)) 
-  && writeByte(address + 1,highByte(value)))
+	// Split int into lower and upper bytes, write each byte
+	if (writeByte(address,lowByte(value)) 
+		&& writeByte(address + 1,highByte(value)))
 		return(1);
 
 	return(0);
 }
-
-
-char SFE_TSL2561::getError()
-//values is an array of char, first entry should be the register to read from
-//subsequent entries will be filled with return values
-{
-	return(_error);
-}
-
-
-char SFE_TSL2561::clearInterrupt(void)
-{
-	Wire.beginTransmission(_i2c_address);
-	Wire.write(0xC0);
-	_error = Wire.endTransmission();
-	if (_error == 0)
-		return(1);
-
-	return(0);
-}
-
-
-char SFE_TSL2561::setPowerUp(void)
-{
-	return(writeByte(0x00,0x03));
-}
-
-
-char SFE_TSL2561::setPowerDown(void)
-{
-	return(writeByte(0x00,0x00));
-}
-
-
-char SFE_TSL2561::getStatus(boolean &status)
-{
-	unsigned char result;
-	
-	if (readByte(0x00,result))
-	{
-		status = ((result & 0x03) == 0x03);
-		return(1);
-	}
-	return(0);
-}
-
-
-char SFE_TSL2561::setGain(boolean gain)
-{
-	unsigned char timing;
-
-	if (readByte(1,timing))
-	{
-		if (gain)
-			timing |= 0x10;
-		else
-			timing &= ~0x10;
-
-		if (writeByte(1,timing))
-			return(1);
-	}
-	return(0);
-}
-
-
-char SFE_TSL2561::manualStart(void)
-	// command TSL2561 to start a pressure measurement
-	// oversampling: 0 - 3 for oversampling value
-	// returns n (number of ms to wait) for success, 0 for fail
-{
-	unsigned char timing;
-	
-	if (readByte(1,timing))
-	{
-		timing |= 0x08;
-		if (writeByte(1,timing))
-			return(1);
-	}
-	return(0);
-}
-
-
-char SFE_TSL2561::manualStop(void)
-	// command TSL2561 to start a pressure measurement
-	// oversampling: 0 - 3 for oversampling value
-	// returns n (number of ms to wait) for success, 0 for fail
-{
-	unsigned char timing;
-	
-	if (readByte(1,timing))
-	{
-		timing &= ~0x08;
-		if (writeByte(1,timing))
-			return(1);
-	}
-	return(0);
-}
-
-
-char SFE_TSL2561::setIntegrationTime(unsigned char time)
-	// time = 0 to 3
-	// oversampling: 0 - 3 for oversampling value
-	// returns n (number of ms to wait) for success, 0 for fail
-{
-	unsigned char timing;
-	
-	if (readByte(1,timing))
-	{
-		timing &= ~0x03;
-		timing |= (time & 0x03);
-
-		if (writeByte(1,timing))
-			return(1);
-	}
-	return(0);
-}
-
-
-char SFE_TSL2561::setInterruptThreshold(unsigned int low, unsigned int high)
-	// time = 0 to 3
-	// oversampling: 0 - 3 for oversampling value
-	// returns n (number of ms to wait) for success, 0 for fail
-{
-	if (writeUInt(2,low) && writeUInt(4,high))
-		return(1);
-		
-	return(0);
-}
-
-
-char SFE_TSL2561::setInterruptControl(unsigned char control, unsigned char persist)
-	// time = 0 to 3
-	// oversampling: 0 - 3 for oversampling value
-	// returns n (number of ms to wait) for success, 0 for fail
-{
-	if (writeByte(5,((control | 0B00000011) << 4) & (persist | 0B00001111)))
-		return(1);
-		
-	return(0);
-}
-
-
-/*
-		char setInterruptThresholdHigh(unsigned int threshold);
-			// command TSL2561 to start a pressure measurement
-			// oversampling: 0 - 3 for oversampling value
-			// returns n (number of ms to wait) for success, 0 for fail
-
-		char setInterruptConfig(unsigned char control, unsigned char persist);
-			// command TSL2561 to start a pressure measurement
-			// oversampling: 0 - 3 for oversampling value
-			// returns n (number of ms to wait) for success, 0 for fail
-*/
-
-char SFE_TSL2561::getID(unsigned char &ID)
-{
-	unsigned char timing;
-	
-	if (readByte(0x0A,ID))
-		return(1);
-
-	return(0);
-}
-
-/*
-char SFE_TSL2561::getID(char *ID)
-{
-	if (getReg(0x0A,ID))
-	return(1);
-	else
-	return(0);
-}
-*/
-/*
-			// command TSL2561 to start a pressure measurement
-			// oversampling: 0 - 3 for oversampling value
-			// returns n (number of ms to wait) for success, 0 for fail
-
-		char getData0(unsigned int *data);
-			// command TSL2561 to start a pressure measurement
-			// oversampling: 0 - 3 for oversampling value
-			// returns n (number of ms to wait) for success, 0 for fail
-
-		char getData1(unsigned int *data);
-			// command TSL2561 to start a pressure measurement
-			// oversampling: 0 - 3 for oversampling value
-			// returns n (number of ms to wait) for success, 0 for fail
-
-		char getLux();
-
-
-
-char SFE_TSL2561::startTemperature(void)
-{
-	unsigned char data[2], result;
-	
-	data[0] = TSL2561_REG_CONTROL;
-	data[1] = TSL2561_COMMAND_TEMPERATURE;
-	result = writeBytes(data, 2);
-	if (result) // good write?
-		return(5); // return the delay in ms (rounded up) to wait before retrieving data
-	else
-		return(0); // or return 0 if there was a problem communicating with the BMP
-}
-
-char SFE_TSL2561::startPressure(char oversampling)
-{
-	unsigned char data[2], result, delay;
-	
-	data[0] = TSL2561_REG_CONTROL;
-
-	switch (oversampling)
-	{
-		case 0:
-			data[1] = TSL2561_COMMAND_PRESSURE0;
-			delay = 5;
-		break;
-		case 1:
-			data[1] = TSL2561_COMMAND_PRESSURE1;
-			delay = 8;
-		break;
-		case 2:
-			data[1] = TSL2561_COMMAND_PRESSURE2;
-			delay = 14;
-		break;
-		case 3:
-			data[1] = TSL2561_COMMAND_PRESSURE3;
-			delay = 26;
-		break;
-		default:
-			data[1] = TSL2561_COMMAND_PRESSURE0;
-			delay = 5;
-		break;
-	}
-	result = writeBytes(data, 2);
-	if (result) // good write?
-		return(delay); // return the delay in ms (rounded up) to wait before retrieving data
-	else
-		return(0); // or return 0 if there was a problem communicating with the BMP
-}
-
-
-/*
-// sealevel()
-// given a pressure P (mb) taken at a specific altitude (meters), return the equivalent pressure (mb) at sea level
-double SFE_TSL2561::sealevel(double P, double A)
-{
-	return(P / pow(1-(A/44330.0),5.255));
-}
-
-// altitude()
-// given a pressure measurement P (mb) and the pressure at a baseline P0 (mb), return altitude (meters) above baseline
-double SFE_TSL2561::altitude(double P, double P0)
-{
-	return(44330.0*(1-pow(P/P0,1/5.255)));
-}
-*/

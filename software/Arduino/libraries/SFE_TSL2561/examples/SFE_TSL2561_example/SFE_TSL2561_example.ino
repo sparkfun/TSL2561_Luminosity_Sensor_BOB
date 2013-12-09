@@ -53,6 +53,8 @@ V10 Mike Grusin, SparkFun Electronics 10/24/2013
 
 SFE_TSL2561 light(TSL2561_ADDR);
 
+unsigned int ms;
+
 void setup()
 {
   unsigned char ID;
@@ -63,15 +65,7 @@ void setup()
   Serial.begin(9600);
   Serial.println("TSL2561 example sketch");
 
-  if (light.begin())
-    Serial.println("Init success!");
-  else
-  {
-    // Oops, something went wrong, this is usually a connection problem,
-    // see the comments at the top of this sketch for the proper connections.
-    Serial.println("Error, init fail\n\n");
-    while(1); // Pause forever.
-  }
+  light.begin();
 
   // Get ID number from part
   // (just for fun, you don't need to do this to operate the part)
@@ -90,118 +84,29 @@ void setup()
   
   // POWER UP AND DOWN
 
-
-  Serial.println("powerdown...");
-  light.setPowerDown();
-  Serial.print("getStatus: ");
-  light.getStatus(state);
-  Serial.println(state);
-
   Serial.println("powerup...");
   light.setPowerUp();
-  Serial.print("getStatus: ");
-  light.getStatus(state);
-  Serial.println(state);
 
-  
+  // set timing
   
 
-  // SET GAIN
-
-  Serial.println();
-
-  Serial.print("timing: ");
-  array[0] = 0x81;
-  light.readBytes(array, 1);
-  printBinary(array[0]);
-  Serial.println();
-
-  Serial.println("setGain 0");
-  light.setGain(0);
-
-  Serial.print("timing: ");
-  array[0] = 0x81;
-  light.readBytes(array, 1);
-  printBinary(array[0]);
-  Serial.println();
-
-  Serial.println("setGain 1");
-  light.setGain(1);
-
-  Serial.print("timing: ");
-  array[0] = 0x81;
-  light.readBytes(array, 1);
-  printBinary(array[0]);
-  Serial.println();
-
-  Serial.println();
-
-  // MANUAL START AND STOP
-
-  Serial.print("timing: ");
-  array[0] = 0x81;
-  light.readBytes(array, 1);
-  printBinary(array[0]);
-  Serial.println();
-
-  Serial.println("manualStart");
-  light.manualStart();
-
-  Serial.print("timing: ");
-  array[0] = 0x81;
-  light.readBytes(array, 1);
-  printBinary(array[0]);
-  Serial.println();
-
-  Serial.println("manualStop");
-  light.manualStop();
-
-  Serial.print("timing: ");
-  array[0] = 0x81;
-  light.readBytes(array, 1);
-  printBinary(array[0]);
-  Serial.println();
-
-  // INTEGRATION TIME
-
-  Serial.println();
-
-  Serial.println("IT = 0");
-  light.setIntegrationTime(0x00);
-
-  Serial.print("timing: ");
-  array[0] = 0x81;
-  light.readBytes(array, 1);
-  printBinary(array[0]);
-  Serial.println();
-
-  Serial.println("IT = 1");
-  light.setIntegrationTime(0x01);
-
-  Serial.print("timing: ");
-  array[0] = 0x81;
-  light.readBytes(array, 1);
-  printBinary(array[0]);
-  Serial.println();
-
-  Serial.println("IT = 2");
-  light.setIntegrationTime(0x02);
-
-  Serial.print("timing: ");
-  array[0] = 0x81;
-  light.readBytes(array, 1);
-  printBinary(array[0]);
-  Serial.println();
-
-  Serial.println("IT = 3");
-  light.setIntegrationTime(0x03);
-
-  Serial.print("timing: ");
-  array[0] = 0x81;
-  light.readBytes(array, 1);
-  printBinary(array[0]);
-  Serial.println();
-
+  
+  Serial.println("set timing...");
+  light.setTiming(0,2,ms);
+  
+  delay(ms);
+  
+  Serial.println("get data...");
+  unsigned int data0, data1;
+  
+  light.getData(data0,data1);
+  
+  Serial.print("data0: ");
+  Serial.print(data0);
+  Serial.print(" data1: ");
+  Serial.println(data1);
+  
+/*
   // int threshold low
 
   unsigned int myuint;
@@ -229,14 +134,34 @@ void setup()
   light.readByte(6,mybyte);
   printBinary(mybyte);
   Serial.println();
-
-  readAll();
+*/
 }
 
 void loop()
 {
+  delay(ms);
   
+  //Serial.println("get data...");
+  unsigned int data0, data1;
   
+  light.getData(data0,data1);
+  
+//  Serial.print("data0: ");
+//  Serial.print(data0);
+//  Serial.print(" data1: ");
+//  Serial.println(data1);
+  
+  Serial.print(data0);
+  Serial.print("  ");
+  Serial.print(data1);
+  Serial.print("  ");
+
+  double lux;
+  boolean good;
+  good = light.getLux(0,ms,data0,data1,lux);
+  Serial.print(lux);
+  Serial.print(" ");
+  Serial.println(good);  
   
 }
 
@@ -255,26 +180,4 @@ void printBinary(byte x)
     if (x & (1 << y)) Serial.print("1"); else Serial.print("0");
   }
 }
-
-
-void readAll()
-{
-  unsigned char array[16];
-
-  array[0] = 0x80;
-  light.readBytes(array,16);
-  
-  Serial.println();
-  for (int x = 0; x < 16; x++)
-  {
-    Serial.print(x,HEX);
-    Serial.print(" ");
-    Serial.print(array[x],HEX);
-    Serial.print(" ");
-    printBinary(array[x]);
-    Serial.println();
-  }
-  Serial.println();
-}
-
 
