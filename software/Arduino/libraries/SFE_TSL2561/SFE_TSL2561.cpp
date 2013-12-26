@@ -16,23 +16,35 @@
 #include <Wire.h>
 
 
+SFE_TSL2561::SFE_TSL2561(void)
+	// SFE_TSL2561 object with default address (0x39)
+{
+	// Set address for subsequent commands
+	_i2c_address = TSL2561_ADDR;
+}
+
+
 SFE_TSL2561::SFE_TSL2561(char i2c_address)
-	// Library object
+			// SFE_TSL2561 object with specific address.
+			// For i2c_address, you can use a number or 
+			// one of the included constants depending on
+			// how the address solder jumper ("ADDR") is set:
+			// TSL2561_ADDR (default), TSL2561_ADDR_0, TSL2561_ADDR_1
 {
 	// Set address for subsequent commands
 	_i2c_address = i2c_address;
 }
 
 
-char SFE_TSL2561::begin()
+boolean SFE_TSL2561::begin(void)
 	// Initialize library 
 {
 	Wire.begin();
-	return(1);
+	return(true);
 }
 
 
-char SFE_TSL2561::setPowerUp(void)
+boolean SFE_TSL2561::setPowerUp(void)
 	// Turn on TSL2561, begin integrations
 	// Returns true (1) if successful, false (0) if there was an I2C error
 	// (Also see getError() below)
@@ -42,7 +54,7 @@ char SFE_TSL2561::setPowerUp(void)
 }
 
 
-char SFE_TSL2561::setPowerDown(void)
+boolean SFE_TSL2561::setPowerDown(void)
 	// Turn off TSL2561
 	// Returns true (1) if successful, false (0) if there was an I2C error
 	// (Also see getError() below)
@@ -52,7 +64,7 @@ char SFE_TSL2561::setPowerDown(void)
 }
 
 
-char SFE_TSL2561::setTiming(boolean gain, unsigned char time)
+boolean SFE_TSL2561::setTiming(boolean gain, unsigned char time)
 	// If gain = false (0), device is set to low gain (1X)
 	// If gain = high (1), device is set to high gain (16X)
 	// If time = 0, integration will be 13.7ms
@@ -79,13 +91,13 @@ char SFE_TSL2561::setTiming(boolean gain, unsigned char time)
 
 		// Write modified timing byte back to device
 		if (writeByte(TSL2561_REG_TIMING,timing))
-			return(1);
+			return(true);
 	}
-	return(0);
+	return(false);
 }
 
 
-char SFE_TSL2561::setTiming(boolean gain, unsigned char time, unsigned int &ms)
+boolean SFE_TSL2561::setTiming(boolean gain, unsigned char time, unsigned int &ms)
 	// If gain = false (0), device is set to low gain (1X)
 	// If gain = high (1), device is set to high gain (16X)
 	// If time = 0, integration will be 13.7ms
@@ -109,7 +121,7 @@ char SFE_TSL2561::setTiming(boolean gain, unsigned char time, unsigned int &ms)
 }
 
 
-char SFE_TSL2561::manualStart(void)
+boolean SFE_TSL2561::manualStart(void)
 	// Starts a manual integration period
 	// After running this command, you must manually stop integration with manualStop()
 	// Internally sets integration time to 3 for manual integration (gain is unchanged)
@@ -131,14 +143,14 @@ char SFE_TSL2561::manualStart(void)
 
 			// Write modified timing byte back to device
 			if (writeByte(TSL2561_REG_TIMING,timing))
-				return(1);
+				return(true);
 		}
 	}
-	return(0);
+	return(false);
 }
 
 
-char SFE_TSL2561::manualStop(void)
+boolean SFE_TSL2561::manualStop(void)
 	// Stops a manual integration period
 	// Returns true (1) if successful, false (0) if there was an I2C error
 	// (Also see getError() below)
@@ -153,13 +165,13 @@ char SFE_TSL2561::manualStop(void)
 
 		// Write modified timing byte back to device
 		if (writeByte(TSL2561_REG_TIMING,timing))
-			return(1);
+			return(true);
 	}
-	return(0);
+	return(false);
 }
 
 
-char SFE_TSL2561::getData(unsigned int &data0, unsigned int &data1)
+boolean SFE_TSL2561::getData(unsigned int &data0, unsigned int &data1)
 	// Retrieve raw integration results
 	// data0 and data1 will be set to integration results
 	// Returns true (1) if successful, false (0) if there was an I2C error
@@ -167,13 +179,13 @@ char SFE_TSL2561::getData(unsigned int &data0, unsigned int &data1)
 {
 	// Get data0 and data1 out of result registers
 	if (readUInt(TSL2561_REG_DATA_0,data0) && readUInt(TSL2561_REG_DATA_1,data1)) 
-		return(1);
+		return(true);
 
-	return(0);
+	return(false);
 }
 
 
-char SFE_TSL2561::getLux(unsigned char gain, unsigned int ms, unsigned int CH0, unsigned int CH1, double &lux)
+boolean SFE_TSL2561::getLux(unsigned char gain, unsigned int ms, unsigned int CH0, unsigned int CH1, double &lux)
 	// Convert raw data to lux
 	// gain: 0 (1X) or 1 (16X), see setTiming()
 	// ms: integration time in ms, from setTiming() or from manual integration
@@ -241,7 +253,7 @@ char SFE_TSL2561::getLux(unsigned char gain, unsigned int ms, unsigned int CH0, 
 }
 
 
-char SFE_TSL2561::setInterruptControl(unsigned char control, unsigned char persist)
+boolean SFE_TSL2561::setInterruptControl(unsigned char control, unsigned char persist)
 	// Sets up interrupt operations
 	// If control = 0, interrupt output disabled
 	// If control = 1, use level interrupt, see setInterruptThreshold()
@@ -253,13 +265,13 @@ char SFE_TSL2561::setInterruptControl(unsigned char control, unsigned char persi
 {
 	// Place control and persist bits into proper location in interrupt control register
 	if (writeByte(TSL2561_REG_INTCTL,((control | 0B00000011) << 4) & (persist | 0B00001111)))
-		return(1);
+		return(true);
 		
-	return(0);
+	return(false);
 }
 
 
-char SFE_TSL2561::setInterruptThreshold(unsigned int low, unsigned int high)
+boolean SFE_TSL2561::setInterruptThreshold(unsigned int low, unsigned int high)
 	// Set interrupt thresholds (channel 0 only)
 	// low, high: 16-bit threshold values
 	// Returns true (1) if successful, false (0) if there was an I2C error
@@ -267,13 +279,13 @@ char SFE_TSL2561::setInterruptThreshold(unsigned int low, unsigned int high)
 {
 	// Write low and high threshold values
 	if (writeUInt(TSL2561_REG_THRESH_L,low) && writeUInt(TSL2561_REG_THRESH_H,high))
-		return(1);
+		return(true);
 		
-	return(0);
+	return(false);
 }
 
 
-char SFE_TSL2561::clearInterrupt(void)
+boolean SFE_TSL2561::clearInterrupt(void)
 	// Clears an active interrupt
 	// Returns true (1) if successful, false (0) if there was an I2C error
 	// (Also see getError() below)
@@ -283,29 +295,27 @@ char SFE_TSL2561::clearInterrupt(void)
 	Wire.write(TSL2561_CMD_CLEAR);
 	_error = Wire.endTransmission();
 	if (_error == 0)
-		return(1);
+		return(true);
 
-	return(0);
+	return(false);
 }
 
 
-char SFE_TSL2561::getID(unsigned char &ID)
+boolean SFE_TSL2561::getID(unsigned char &ID)
 	// Retrieves part and revision code from TSL2561
 	// Sets ID to part ID (see datasheet)
 	// Returns true (1) if successful, false (0) if there was an I2C error
 	// (Also see getError() below)
 {
-	unsigned char timing;
-	
 	// Get ID byte from ID register
 	if (readByte(TSL2561_REG_ID,ID))
-		return(1);
+		return(true);
 
-	return(0);
+	return(false);
 }
 
 
-char SFE_TSL2561::getError()
+byte SFE_TSL2561::getError(void)
 	// If any library command fails, you can retrieve an extended
 	// error code using this command. Errors are from the wire library: 
 	// 0 = Success
@@ -319,7 +329,7 @@ char SFE_TSL2561::getError()
 
 // Private functions:
 
-char SFE_TSL2561::readByte(unsigned char address, unsigned char &value)
+boolean SFE_TSL2561::readByte(unsigned char address, unsigned char &value)
 	// Reads a byte from a TSL2561 address
 	// Address: TSL2561 address (0 to 15)
 	// Value will be set to stored byte
@@ -338,14 +348,14 @@ char SFE_TSL2561::readByte(unsigned char address, unsigned char &value)
 		if (Wire.available() == 1)
 		{
 			value = Wire.read();
-			return(1);
+			return(true);
 		}
 	}
-	return(0);
+	return(false);
 }
 
 
-char SFE_TSL2561::writeByte(unsigned char address, unsigned char value)
+boolean SFE_TSL2561::writeByte(unsigned char address, unsigned char value)
 	// Write a byte to a TSL2561 address
 	// Address: TSL2561 address (0 to 15)
 	// Value: byte to write to address
@@ -359,13 +369,13 @@ char SFE_TSL2561::writeByte(unsigned char address, unsigned char value)
 	Wire.write(value);
 	_error = Wire.endTransmission();
 	if (_error == 0)
-		return(1);
+		return(true);
 
-	return(0);
+	return(false);
 }
 
 
-char SFE_TSL2561::readUInt(unsigned char address, unsigned int &value)
+boolean SFE_TSL2561::readUInt(unsigned char address, unsigned int &value)
 	// Reads an unsigned integer (16 bits) from a TSL2561 address (low byte first)
 	// Address: TSL2561 address (0 to 15), low byte first
 	// Value will be set to stored unsigned integer
@@ -389,14 +399,14 @@ char SFE_TSL2561::readUInt(unsigned char address, unsigned int &value)
 			high = Wire.read();
 			// Combine bytes into unsigned int
 			value = word(high,low);
-			return(1);
+			return(true);
 		}
 	}	
-	return(0);
+	return(false);
 }
 
 
-char SFE_TSL2561::writeUInt(unsigned char address, unsigned int value)
+byte SFE_TSL2561::writeUInt(unsigned char address, unsigned int value)
 	// Write an unsigned integer (16 bits) to a TSL2561 address (low byte first)
 	// Address: TSL2561 address (0 to 15), low byte first
 	// Value: unsigned int to write to address
@@ -406,7 +416,7 @@ char SFE_TSL2561::writeUInt(unsigned char address, unsigned int value)
 	// Split int into lower and upper bytes, write each byte
 	if (writeByte(address,lowByte(value)) 
 		&& writeByte(address + 1,highByte(value)))
-		return(1);
+		return(true);
 
-	return(0);
+	return(false);
 }

@@ -43,141 +43,165 @@ buy me a beer someday.
 V10 Mike Grusin, SparkFun Electronics 10/24/2013
 */
 
-// Your sketch must #include this library, and the Wire library.
-// (Wire is a standard library included with Arduino.):
+// Your sketch must #include this library, and the Wire library
+// (Wire is a standard library included with Arduino):
 
 #include <SFE_TSL2561.h>
 #include <Wire.h>
 
-// You will need to create an SFE_TSL2561 object, here called "light":
+// Create an SFE_TSL2561 object, here called "light":
 
 SFE_TSL2561 light(TSL2561_ADDR);
 
-unsigned int ms;
+// Global variables:
+
+boolean gain;     // Gain setting, 0 = X1, 1 = X16;
+unsigned int ms;  // Integration ("shutter") time
 
 void setup()
 {
-  unsigned char ID;
-  boolean state;
-  unsigned char array[2];
-  // Initialize part
+  // Initialize the Serial port:
   
   Serial.begin(9600);
   Serial.println("TSL2561 example sketch");
 
+  // Initialize the SFE_TSL2561 library:
+
   light.begin();
 
-  // Get ID number from part
-  // (just for fun, you don't need to do this to operate the part)
+  // Get factory ID from sensor:
+  // (Just for fun, you don't need to do this to operate the sensor)
 
+  unsigned char ID;
+  
   if (light.getID(ID))
   {
-    Serial.print("Got part ID: 0X");
+    Serial.print("Got factory ID: 0X");
     Serial.print(ID,HEX);
     Serial.println(", should be 0X5X");
   }
+  // Most library commands will return true if communications was successful,
+  // and false if there was a problem. You can ignore this returned value,
+  // or check whether a command worked correctly and retrieve an error code:
   else
   {
-    Serial.println("Error, couldn't retrieve part ID\n\n");
-    while(1); // Pause forever.
+    byte error = light.getError();
+    printError(error);
   }
-  
-  // POWER UP AND DOWN
 
-  Serial.println("powerup...");
+  // The light sensor has a default integration time of 402ms,
+  // and a default gain of low (1X)
+  
+  // If you would like to change the integration time, you can
+  // do so using the setTiming() command
+  
+  // If gain = false (0), device is set to low gain (1X)
+  // If gain = high (1), device is set to high gain (16X)
+
+  gain = 0;
+
+  // If time = 0, integration will be 13.7ms
+  // If time = 1, integration will be 101ms
+  // If time = 2, integration will be 402ms
+  // If time = 3, use manual start / stop to perform your own integration
+
+  unsigned char time = 2;
+
+  // setTiming() will optionally set the third parameter (ms)
+  // to the requested integration time in ms:
+  
+  Serial.println("Set timing...");
+  light.setTiming(gain,time,ms);
+
+  // To start measurements, power up the sensor:
+  
+  Serial.println("Powerup...");
   light.setPowerUp();
-
-  // set timing
-  
-
-  
-  Serial.println("set timing...");
-  light.setTiming(0,2,ms);
-  
-  delay(ms);
-  
-  Serial.println("get data...");
-  unsigned int data0, data1;
-  
-  light.getData(data0,data1);
-  
-  Serial.print("data0: ");
-  Serial.print(data0);
-  Serial.print(" data1: ");
-  Serial.println(data1);
-  
-/*
-  // int threshold low
-
-  unsigned int myuint;
-
-  Serial.println();
-  light.setInterruptThreshold(0x0123,0xABCD);
-
-  light.readUInt(2,myuint);
-  Serial.println(myuint,HEX);
-  
-  light.readUInt(4,myuint);
-  Serial.println(myuint,HEX);
-
-  // INT CTL
-  unsigned char mybyte;
-
-  Serial.print("control: ");
-  light.readByte(6,mybyte);
-  printBinary(mybyte);
-  Serial.println();
-
-  light.setInterruptControl(0xFF,0xFF); 
-
-  Serial.print("control: ");
-  light.readByte(6,mybyte);
-  printBinary(mybyte);
-  Serial.println();
-*/
 }
 
 void loop()
 {
-  delay(ms);
+  // Wait between measurements before retrieving the result
+  // (You can also configure the sensor to issue an interrupt
+  // when measurements are complete)
   
-  //Serial.println("get data...");
+  // You can also perform your own integration by setting "time"
+  // to 3 (manual) in setTiming(), then performing a manualStart()
+  // and a manualStop():
+  
+  // ms = 1000;
+  // light.manualStart();
+  delay(ms);
+  // light.manualStop();
+  
+  // Once integration is complete, we'll retrieve the data.
+  
+  // There are two light sensors on the device, one for visible light
+  // and one for infrared. Both are needed for lux calculations:
+
   unsigned int data0, data1;
   
-  light.getData(data0,data1);
+  if (light.getData(data0,data1))
+  {
+    // getData() returned true, communication was successful
+    
+    Serial.print("data0: ");
+    Serial.print(data0);
+    Serial.print(" data1: ");
+    Serial.print(data1);
   
-//  Serial.print("data0: ");
-//  Serial.print(data0);
-//  Serial.print(" data1: ");
-//  Serial.println(data1);
+    // To calculate lux, pass all your settings and readings
+    // to the getLux() function.
+    
+    // The getLux() function will return 1 if the calculation
+    // was successful, or 0 if one or both of the sensors was
+    // saturated (too much light). If this happens, you can
+    // reduce the integration time and/or gain.
   
-  Serial.print(data0);
-  Serial.print("  ");
-  Serial.print(data1);
-  Serial.print("  ");
+    double lux;
+    boolean good;
+    
+    good = light.getLux(gain,ms,data0,data1,lux);
+    
+    Serial.print(" lux: ");
+    Serial.print(lux);
+    if (good) Serial.println(" (good)"); else Serial.println(" (BAD)");
+  }
+  else
+  {
+    // getData() returned false because of an I2C error
 
-  double lux;
-  boolean good;
-  good = light.getLux(0,ms,data0,data1,lux);
-  Serial.print(lux);
-  Serial.print(" ");
-  Serial.println(good);  
-  
+    byte error = light.getError();
+    printError(error);
+  }
 }
 
-void printBinary(byte x)
-// Utility routine to print a number (8 bits) in binary
+void printError(byte error)
+  // If there's an error, print out an explanation
 {
-  char y;
+  Serial.print("I2C error: ");
+  Serial.print(error,DEC);
+  Serial.print(", ");
   
-  // Step through all eight bits, MSB to LSB
-  for (y = 7; y >= 0; y--)
+  switch(error)
   {
-    // Print a space between the upper and lower nybbles
-    if (y == 3) Serial.print(" ");
-    
-    // Check if the bit is a 1 or 0 and print that out
-    if (x & (1 << y)) Serial.print("1"); else Serial.print("0");
+    case 0:
+      Serial.println("success");
+      break;
+    case 1:
+      Serial.println("data too long for transmit buffer");
+      break;
+    case 2:
+      Serial.println("received NACK on address (disconnected?)");
+      break;
+    case 3:
+      Serial.println("received NACK on data");
+      break;
+    case 4:
+      Serial.println("other error");
+      break;
+    default:
+      Serial.println("unknown error");
   }
 }
 

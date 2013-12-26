@@ -20,27 +20,31 @@
 class SFE_TSL2561
 {
 	public:
+		SFE_TSL2561();
+			// SFE_TSL2561 object with default address (0x39)
+			
 		SFE_TSL2561(char i2c_address);
-			// SFE_TSL2561 object. For i2c_address, you can use
-			// one of the included constants depending on how
-			// the address solder jumper is set:
-			// TSL2561_ADDR, TSL2561_ADDR_0, TSL2561_ADDR_1
+			// SFE_TSL2561 object with specific address.
+			// For i2c_address, you can use a number or 
+			// one of the included constants depending on
+			// how the address solder jumper ("ADDR") is set:
+			// TSL2561_ADDR (default), TSL2561_ADDR_0, TSL2561_ADDR_1
 
-		char begin(void);
+		boolean begin(void);
 			// Initialize TSL2561 library
 			// Always returns true
 		
-		char setPowerUp(void);
+		boolean setPowerUp(void);
 			// Turn on TSL2561, begin integration
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() below)
 
-		char setPowerDown(void);
+		boolean setPowerDown(void);
 			// Turn off TSL2561
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() below)
 
-		char setTiming(boolean gain, unsigned char time);
+		boolean setTiming(boolean gain, unsigned char time);
 			// If gain = false (0), device is set to low gain (1X)
 			// If gain = high (1), device is set to high gain (16X)
 			// If time = 0, integration will be 13.7ms
@@ -50,7 +54,7 @@ class SFE_TSL2561
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() below)
 
-		char setTiming(boolean gain, unsigned char time, unsigned int &ms);
+		boolean setTiming(boolean gain, unsigned char time, unsigned int &ms);
 			// Identical to above command, except ms is set to selected integration time
 			// If gain = false (0), device is set to low gain (1X)
 			// If gain = high (1), device is set to high gain (16X)
@@ -62,25 +66,25 @@ class SFE_TSL2561
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() below)
 
-		char manualStart(void);
+		boolean manualStart(void);
 			// Starts a manual integration period
 			// After running this command, you must manually stop integration with manualStop()
 			// Internally sets integration time to 3 for manual integration (gain is unchanged)
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() below)
 
-		char manualStop(void);
+		boolean manualStop(void);
 			// Stops a manual integration period
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() below)
 
-		char getData(unsigned int &CH0, unsigned int &CH1);
+		boolean getData(unsigned int &CH0, unsigned int &CH1);
 			// Retrieve raw integration results
 			// data0 and data1 will be set to integration results
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() below)
 			
-		char getLux(unsigned char gain, unsigned int ms, unsigned int CH0, unsigned int CH1, double &lux);
+		boolean getLux(unsigned char gain, unsigned int ms, unsigned int CH0, unsigned int CH1, double &lux);
 			// Convert raw data to lux
 			// gain: 0 (1X) or 1 (16X), see setTiming()
 			// ms: integration time in ms, from setTiming() or from manual integration
@@ -89,7 +93,7 @@ class SFE_TSL2561
 			// returns true (1) if calculation was successful
 			// RETURNS false (0) AND lux = 0.0 IF EITHER SENSOR WAS SATURATED (0XFFFF)
 
-		char setInterruptControl(unsigned char control, unsigned char persist);
+		boolean setInterruptControl(unsigned char control, unsigned char persist);
 			// Sets up interrupt operations
 			// If control = 0, interrupt output disabled
 			// If control = 1, use level interrupt, see setInterruptThreshold()
@@ -99,24 +103,24 @@ class SFE_TSL2561
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() below)
 
-		char setInterruptThreshold(unsigned int low, unsigned int high);
+		boolean setInterruptThreshold(unsigned int low, unsigned int high);
 			// Set interrupt thresholds (channel 0 only)
 			// low, high: 16-bit threshold values
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() below)
 
-		char clearInterrupt(void);
+		boolean clearInterrupt(void);
 			// Clears an active interrupt
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() below)
 
-		char getID(unsigned char &ID);
+		boolean getID(unsigned char &ID);
 			// Retrieves part and revision code from TSL2561
 			// Sets ID to part ID (see datasheet)
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() below)
 			
-		char getError(void);
+		byte getError(void);
 			// If any library command fails, you can retrieve an extended
 			// error code using this command. Errors are from the wire library: 
 			// 0 = Success
@@ -127,28 +131,28 @@ class SFE_TSL2561
 
 //	private:
 
-		char readByte(unsigned char address, unsigned char &value);
+		boolean readByte(unsigned char address, unsigned char &value);
 			// Reads a byte from a TSL2561 address
 			// Address: TSL2561 address (0 to 15)
 			// Value will be set to stored byte
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() above)
 	
-		char writeByte(unsigned char address, unsigned char value);
+		boolean writeByte(unsigned char address, unsigned char value);
 			// Write a byte to a TSL2561 address
 			// Address: TSL2561 address (0 to 15)
 			// Value: byte to write to address
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() above)
 
-		char readUInt(unsigned char address, unsigned int &value);
+		boolean readUInt(unsigned char address, unsigned int &value);
 			// Reads an unsigned integer (16 bits) from a TSL2561 address (low byte first)
 			// Address: TSL2561 address (0 to 15), low byte first
 			// Value will be set to stored unsigned integer
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() above)
 
-		char writeUInt(unsigned char address, unsigned int value);
+		boolean writeUInt(unsigned char address, unsigned int value);
 			// Write an unsigned integer (16 bits) to a TSL2561 address (low byte first)
 			// Address: TSL2561 address (0 to 15), low byte first
 			// Value: unsigned int to write to address
@@ -156,7 +160,7 @@ class SFE_TSL2561
 			// (Also see getError() above)
 			
 		char _i2c_address;
-		char _error;
+		byte _error;
 };
 
 #define TSL2561_ADDR_0 0x29 // address with '0' shorted on board
