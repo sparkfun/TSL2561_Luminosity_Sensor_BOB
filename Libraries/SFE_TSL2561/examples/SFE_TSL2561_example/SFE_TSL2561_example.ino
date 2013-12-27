@@ -1,46 +1,45 @@
 /* SFE_TSL2561 library example sketch
 
-This sketch shows how to use the SFE_TSL2561 library to read the
-Bosch TSL2561 light sensor.
-https://www.sparkfun.com/products/11824
+This sketch shows how to use the SFE_TSL2561
+library to read the AMS/TAOS TSL2561
+light sensor.
 
-Like most light sensors, the TSL2561 measures absolute light.
-To convert this to the sea-level-compensated light used in weather
-reports, you must provide the known altitude at which the light
-was measured.
-
-If, on the other hand, you want to use this sensor to measure altitude,
-you will need to provide the known light for a given baseline altitude.
-This sketch shows the use of both functions.
+Product page: https://www.sparkfun.com/products/11824
+Hook-up guide: https://learn.sparkfun.com/tutorials/getting-started-with-the-tsl2561-luminosity-sensor
 
 Hardware connections:
 
-- (GND) to GND
-+ (VDD) to 3.3V
+3V3 to 3.3V
+GND to GND
 
-(WARNING: do not connect + to 5V or the sensor will be damaged!)
+(WARNING: do not connect 3V3 to 5V
+or the sensor will be damaged!)
 
 You will also need to connect the I2C pins (SCL and SDA) to your Arduino.
 The pins are different on different Arduinos:
 
-                    SDA  SCL
-Uno, Redboard, Pro  A4   A5
-Mega2560, Due       20   21
-Leonardo             2    3
+                    SDA    SCL
+Any Arduino         "SDA"  "SCL"
+Uno, Redboard, Pro  A4     A5
+Mega2560, Due       20     21
+Leonardo            2      3
 
-Leave the IO (VDDIO) pin unconnected. This pin is for connecting
-the TSL2561 to systems with lower logic levels such as 1.8V
+You do not need to connect the INT (interrupt) pin
+for basic operation.
+
+Operation:
+
+Upload this sketch to your Arduino, and open the
+Serial Monitor window to 9600 baud.
 
 Have fun! -Your friends at SparkFun.
 
-The SFE_TSL2561 library uses floating-point equations developed by the
-Weather Station Data Logger project: http://wmrx00.sourceforge.net/
-
-Our example code uses the "beerware" license. You can do anything
-you like with this code. No really, anything. If you find it useful,
+Our example code uses the "beerware" license.
+You can do anything you like with this code.
+No really, anything. If you find it useful,
 buy me a beer someday.
 
-V10 Mike Grusin, SparkFun Electronics 10/24/2013
+V10 Mike Grusin, SparkFun Electronics 12/26/2013
 */
 
 // Your sketch must #include this library, and the Wire library
@@ -51,12 +50,12 @@ V10 Mike Grusin, SparkFun Electronics 10/24/2013
 
 // Create an SFE_TSL2561 object, here called "light":
 
-SFE_TSL2561 light(TSL2561_ADDR);
+SFE_TSL2561 light;
 
 // Global variables:
 
 boolean gain;     // Gain setting, 0 = X1, 1 = X16;
-unsigned int ms;  // Integration ("shutter") time
+unsigned int ms;  // Integration ("shutter") time in milliseconds
 
 void setup()
 {
@@ -65,7 +64,17 @@ void setup()
   Serial.begin(9600);
   Serial.println("TSL2561 example sketch");
 
-  // Initialize the SFE_TSL2561 library:
+  // Initialize the SFE_TSL2561 library
+
+  // You can pass nothing to light.begin() for the default I2C address (0x39),
+  // or use one of the following presets if you have changed
+  // the ADDR jumper on the board:
+  
+  // TSL2561_ADDR_0 address with '0' shorted on board (0x29)
+  // TSL2561_ADDR   default address (0x39)
+  // TSL2561_ADDR_1 address with '1' shorted on board (0x49)
+
+  // For more information see the hookup guide at: https://learn.sparkfun.com/tutorials/getting-started-with-the-tsl2561-luminosity-sensor
 
   light.begin();
 
@@ -90,10 +99,10 @@ void setup()
   }
 
   // The light sensor has a default integration time of 402ms,
-  // and a default gain of low (1X)
+  // and a default gain of low (1X).
   
-  // If you would like to change the integration time, you can
-  // do so using the setTiming() command
+  // If you would like to change either of these, you can
+  // do so using the setTiming() command.
   
   // If gain = false (0), device is set to low gain (1X)
   // If gain = high (1), device is set to high gain (16X)
@@ -107,16 +116,20 @@ void setup()
 
   unsigned char time = 2;
 
-  // setTiming() will optionally set the third parameter (ms)
-  // to the requested integration time in ms:
+  // setTiming() will set the third parameter (ms) to the
+  // requested integration time in ms (this will be useful later):
   
   Serial.println("Set timing...");
   light.setTiming(gain,time,ms);
 
-  // To start measurements, power up the sensor:
+  // To start taking measurements, power up the sensor:
   
   Serial.println("Powerup...");
   light.setPowerUp();
+  
+  // The sensor will now gather light during the integration time.
+  // After the specified time, you can retrieve the result from the sensor.
+  // Once a measurement occurs, another integration period will start.
 }
 
 void loop()
@@ -125,9 +138,11 @@ void loop()
   // (You can also configure the sensor to issue an interrupt
   // when measurements are complete)
   
-  // You can also perform your own integration by setting "time"
-  // to 3 (manual) in setTiming(), then performing a manualStart()
-  // and a manualStop():
+  // This sketch uses the TSL2561's built-in integration timer.
+  // You can also perform your own manual integration timing
+  // by setting "time" to 3 (manual) in setTiming(),
+  // then performing a manualStart() and a manualStop() as in the below
+  // commented statements:
   
   // ms = 1000;
   // light.manualStart();
@@ -137,7 +152,9 @@ void loop()
   // Once integration is complete, we'll retrieve the data.
   
   // There are two light sensors on the device, one for visible light
-  // and one for infrared. Both are needed for lux calculations:
+  // and one for infrared. Both sensors are needed for lux calculations.
+  
+  // Retrieve the data from the device:
 
   unsigned int data0, data1;
   
@@ -157,19 +174,24 @@ void loop()
     // was successful, or 0 if one or both of the sensors was
     // saturated (too much light). If this happens, you can
     // reduce the integration time and/or gain.
+    // For more information see the hookup guide at: https://learn.sparkfun.com/tutorials/getting-started-with-the-tsl2561-luminosity-sensor
   
-    double lux;
-    boolean good;
+    double lux;    // Resulting lux value
+    boolean good;  // True if neither sensor is saturated
     
+    // Perform lux calculation:
+
     good = light.getLux(gain,ms,data0,data1,lux);
     
+    // Print out the results:
+	
     Serial.print(" lux: ");
     Serial.print(lux);
     if (good) Serial.println(" (good)"); else Serial.println(" (BAD)");
   }
   else
   {
-    // getData() returned false because of an I2C error
+    // getData() returned false because of an I2C error, inform the user.
 
     byte error = light.getError();
     printError(error);
@@ -177,7 +199,8 @@ void loop()
 }
 
 void printError(byte error)
-  // If there's an error, print out an explanation
+  // If there's an I2C error, this function will
+  // print out an explanation.
 {
   Serial.print("I2C error: ");
   Serial.print(error,DEC);

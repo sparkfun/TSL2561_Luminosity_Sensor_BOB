@@ -20,18 +20,18 @@
 class SFE_TSL2561
 {
 	public:
-		SFE_TSL2561();
-			// SFE_TSL2561 object with default address (0x39)
+		SFE_TSL2561(void);
+			// SFE_TSL2561 object
 			
-		SFE_TSL2561(char i2c_address);
-			// SFE_TSL2561 object with specific address.
-			// For i2c_address, you can use a number or 
-			// one of the included constants depending on
-			// how the address solder jumper ("ADDR") is set:
-			// TSL2561_ADDR (default), TSL2561_ADDR_0, TSL2561_ADDR_1
-
 		boolean begin(void);
-			// Initialize TSL2561 library
+			// Initialize TSL2561 library with default address (0x39)
+			// Always returns true
+
+		boolean begin(char i2c_address);
+			// Initialize TSL2561 library to arbitrary address or:
+			// TSL2561_ADDR_0 (0x29 address with '0' shorted on board)
+			// TSL2561_ADDR   (0x39 default address)
+			// TSL2561_ADDR_1 (0x49 address with '1' shorted on board)
 			// Always returns true
 		
 		boolean setPowerUp(void);
