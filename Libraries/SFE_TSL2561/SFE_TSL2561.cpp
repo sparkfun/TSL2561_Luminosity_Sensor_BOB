@@ -213,10 +213,10 @@ boolean SFE_TSL2561::getLux(unsigned char gain, unsigned int ms, unsigned int CH
 	d1 *= (402.0/ms);
 
 	// Normalize for gain
-	if (gain)
+	if (!gain)
 	{
-		d0 /= 16;
-		d1 /= 16;
+		d0 *= 16;
+		d1 *= 16;
 	}
 
 	// Determine lux per datasheet equations:
