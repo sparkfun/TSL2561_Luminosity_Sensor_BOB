@@ -404,7 +404,7 @@ boolean SFE_TSL2561::readUInt(unsigned char address, unsigned int &value)
 }
 
 
-byte SFE_TSL2561::writeUInt(unsigned char address, unsigned int value)
+boolean SFE_TSL2561::writeUInt(unsigned char address, unsigned int value)
 	// Write an unsigned integer (16 bits) to a TSL2561 address (low byte first)
 	// Address: TSL2561 address (0 to 15), low byte first
 	// Value: unsigned int to write to address
