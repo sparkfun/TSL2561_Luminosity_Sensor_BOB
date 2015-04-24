@@ -32,7 +32,7 @@ Products that use this Library
 Version History
 ---------------
 
-* [vExxFxxZxxHxxLxxSxx](URL for tag specific to this version) - Description 
+* [V_1.0.0](https://github.com/sparkfun/SparkFun_TSL2561_Luminosity_Sensor_BOB_Arduino_Library/tree/V_1.0.0) - Description 
 
 License Information
 -------------------
