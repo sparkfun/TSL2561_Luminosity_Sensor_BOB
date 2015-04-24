@@ -45,7 +45,7 @@ V10 Mike Grusin, SparkFun Electronics 12/26/2013
 // Your sketch must #include this library, and the Wire library
 // (Wire is a standard library included with Arduino):
 
-#include <SFE_TSL2561.h>
+#include <SparkFunTSL2561ArduinoLibrary.h>
 #include <Wire.h>
 
 // Create an SFE_TSL2561 object, here called "light":
