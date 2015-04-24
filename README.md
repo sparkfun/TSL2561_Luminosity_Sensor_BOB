@@ -1,11 +1,12 @@
-SparkFun <PRODUCT NAME> Arduino Library
+SparkFun TSL2561 Arduino Library
 ========================================
 
-![SparkFun Part Name](URL for picture of part)
+[![TSL2561 Luminosity Sensor Breakout](https://dlnmh9ip6v2uc.cloudfront.net//images/products/1/2/0/5/5/12055-01.jpg) 
+*TSL2561 Luminosity Sensor Breakout (SEN-12055)*](https://www.sparkfun.com/products/12055)
 
-[*SparkFun Part Name (SKU)*](URL for product on Sparkfun.com)
-
-<Basic description of the library.>
+This is a Arduino Library for the AMS/TAOS TSL2561 Luminiosity sensor.
+This illumination sensor has a flat response across most of the visible spectrum and has an adjustable integration time. 
+It communicates via I2C and runs at 3.3V. 
 
 Repository Contents
 -------------------
@@ -20,20 +21,18 @@ Documentation
 --------------
 
 * **[Installing an Arduino Library Guide](https://learn.sparkfun.com/tutorials/installing-an-arduino-library)** - Basic information on how to install an Arduino library.
-* **[Product Repository](GitHub Product URL)** - Main repository (including hardware files) for the <PRODUCT NAME>.
-* **[Hookup Guide](Learn.SparkFun URL)** - Basic hookup guide for the <PRODUCT NAME>.
+* **[Product Repository](https://github.com/sparkfun/TSL2561_Luminosity_Sensor_BOB/)** - Main repository (including hardware files) for the TSL2561 Luminosity Sensor.
+* **[Hookup Guide](https://learn.sparkfun.com/tutorials/tsl2561-luminosity-sensor-hookup-guide)** - Basic hookup guide for the TSL2561 Luminosity Sensor.
 
 Products that use this Library 
 ---------------------------------
 
-* [Part SKU](SparkFun part URL)- Basic part and short description here
-* [Part SKU](SparkFun part URL)- Basic part and short description here
+* [SEN-12055](Shttps://www.sparkfun.com/products/12055)- TSL2561 Luminosity Sensor.
 
 Version History
 ---------------
 
 * [vExxFxxZxxHxxLxxSxx](URL for tag specific to this version) - Description 
-* [vEyyFyyZyyHyyLyySyy](URL for tag specific to this version) - Description
 
 License Information
 -------------------
@@ -47,5 +46,3 @@ Please use, reuse, and modify these files as you see fit. Please maintain attrib
 Distributed as-is; no warranty is given.
 
 - Your friends at SparkFun.
-
-_<COLLABORATION CREDIT>_
