@@ -1,9 +1,9 @@
 SparkFun TSL2561 Arduino Library
 ========================================
 
-[![TSL2561 Luminosity Sensor Breakout](https://dlnmh9ip6v2uc.cloudfront.net//images/products/1/2/0/5/5/12055-01.jpg) 
+[![TSL2561 Luminosity Sensor Breakout](https://dlnmh9ip6v2uc.cloudfront.net//images/products/1/2/0/5/5/12055-01.jpg)
 
-*TSL2561 Luminosity Sensor Breakout (SEN-12055)*](https://www.sparkfun.com/products/12055)
+* TSL2561 Luminosity Sensor Breakout (SEN-12055)*](https://www.sparkfun.com/products/12055)
 
 This is a Arduino Library for the AMS/TAOS TSL2561 Luminiosity sensor.
 This illumination sensor has a flat response across most of the visible spectrum and has an adjustable integration time. 
