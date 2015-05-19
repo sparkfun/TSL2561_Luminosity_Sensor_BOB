@@ -10,10 +10,11 @@
 	buy me a beer someday.
 
 	version 1.0 2013/09/20 MDG initial version
+	Updated to Arduino 1.6.4 5/2015
 */
 
-#ifndef SFE_TSL2561_h
-#define SFE_TSL2561_h
+#ifndef SparkFunTSL2561_h
+#define SparkFunTSL2561_h
 
 #include "Arduino.h"
 

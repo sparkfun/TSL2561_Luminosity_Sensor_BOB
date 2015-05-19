@@ -1,6 +1,6 @@
-/* SFE_TSL2561 library example sketch
+/* SparkFun TSL2561 library example sketch
 
-This sketch shows how to use the SFE_TSL2561
+This sketch shows how to use the SparkFunTSL2561
 library to read the AMS/TAOS TSL2561
 light sensor.
 
@@ -40,12 +40,13 @@ No really, anything. If you find it useful,
 buy me a beer someday.
 
 V10 Mike Grusin, SparkFun Electronics 12/26/2013
+Updated to Arduino 1.6.4 5/2015
 */
 
 // Your sketch must #include this library, and the Wire library
 // (Wire is a standard library included with Arduino):
 
-#include <SFE_TSL2561.h>
+#include <SparkFunTSL2561.h>
 #include <Wire.h>
 
 // Create an SFE_TSL2561 object, here called "light":
