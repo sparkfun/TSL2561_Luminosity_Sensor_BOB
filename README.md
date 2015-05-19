@@ -19,7 +19,7 @@ Repository Contents
 Documentation
 --------------
 * **[Library](https://github.com/sparkfun/SparkFun_TSL2561_Arduino_Library)** - Arduino library for the TSL2561.
-* **[Hookup Guide](https://learn.sparkfun.com/tutorials/tsl2561-luminosity-sensor-hookup-guide** - Basic hookup guide for the TSL2561 Breakout.
+* **[Hookup Guide](https://learn.sparkfun.com/tutorials/tsl2561-luminosity-sensor-hookup-guide)** - Basic hookup guide for the TSL2561 Breakout.
 * **[SparkFun Fritzing repo](https://github.com/sparkfun/Fritzing_Parts)** - Fritzing diagrams for SparkFun products.
 * **[SparkFun 3D Model repo](https://github.com/sparkfun/3D_Models)** - 3D models of SparkFun products. 
 
