@@ -263,7 +263,7 @@ boolean SFE_TSL2561::setInterruptControl(unsigned char control, unsigned char pe
 	// (Also see getError() below)
 {
 	// Place control and persist bits into proper location in interrupt control register
-	if (writeByte(TSL2561_REG_INTCTL,((control | 0B00000011) << 4) & (persist | 0B00001111)))
+	if (writeByte(TSL2561_REG_INTCTL,((control & 0B00000011) << 4) | (persist & 0B00001111)))
 		return(true);
 		
 	return(false);
