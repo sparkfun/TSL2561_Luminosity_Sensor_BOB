@@ -1,10 +1,10 @@
 /*
 	SFE_TSL2561 illumination sensor library for Arduino
 	Mike Grusin, SparkFun Electronics
-	
+
 	This library provides functions to access the TAOS TSL2561
 	Illumination Sensor.
-	
+
 	Our example code uses the "beerware" license. You can do anything
 	you like with this code. No really, anything. If you find it useful,
 	buy me a beer someday.
@@ -128,7 +128,7 @@ boolean SFE_TSL2561::manualStart(void)
 	// (Also see getError() below)
 {
 	unsigned char timing;
-	
+
 	// Get timing byte
 	if (readByte(TSL2561_REG_TIMING,timing))
 	{
@@ -155,7 +155,7 @@ boolean SFE_TSL2561::manualStop(void)
 	// (Also see getError() below)
 {
 	unsigned char timing;
-	
+
 	// Get timing byte
 	if (readByte(TSL2561_REG_TIMING,timing))
 	{
@@ -177,7 +177,7 @@ boolean SFE_TSL2561::getData(unsigned int &data0, unsigned int &data1)
 	// (Also see getError() below)
 {
 	// Get data0 and data1 out of result registers
-	if (readUInt(TSL2561_REG_DATA_0,data0) && readUInt(TSL2561_REG_DATA_1,data1)) 
+	if (readUInt(TSL2561_REG_DATA_0,data0) && readUInt(TSL2561_REG_DATA_1,data1))
 		return(true);
 
 	return(false);
@@ -221,7 +221,7 @@ boolean SFE_TSL2561::getLux(unsigned char gain, unsigned int ms, unsigned int CH
 	}
 
 	// Determine lux per datasheet equations:
-	
+
 	if (ratio < 0.5)
 	{
 		lux = 0.0304 * d0 - 0.062 * d0 * pow(ratio,1.4);
@@ -263,9 +263,9 @@ boolean SFE_TSL2561::setInterruptControl(unsigned char control, unsigned char pe
 	// (Also see getError() below)
 {
 	// Place control and persist bits into proper location in interrupt control register
-	if (writeByte(TSL2561_REG_INTCTL,((control | 0B00000011) << 4) & (persist | 0B00001111)))
+	if (writeByte(TSL2561_REG_INTCTL,((control & 0B00000011) << 4) | (persist & 0B00001111)))
 		return(true);
-		
+
 	return(false);
 }
 
@@ -279,7 +279,7 @@ boolean SFE_TSL2561::setInterruptThreshold(unsigned int low, unsigned int high)
 	// Write low and high threshold values
 	if (writeUInt(TSL2561_REG_THRESH_L,low) && writeUInt(TSL2561_REG_THRESH_H,high))
 		return(true);
-		
+
 	return(false);
 }
 
@@ -316,7 +316,7 @@ boolean SFE_TSL2561::getID(unsigned char &ID)
 
 byte SFE_TSL2561::getError(void)
 	// If any library command fails, you can retrieve an extended
-	// error code using this command. Errors are from the wire library: 
+	// error code using this command. Errors are from the wire library:
 	// 0 = Success
 	// 1 = Data too long to fit in transmit buffer
 	// 2 = Received NACK on transmit of address
@@ -382,7 +382,7 @@ boolean SFE_TSL2561::readUInt(unsigned char address, unsigned int &value)
 	// (Also see getError() above)
 {
 	char high, low;
-	
+
 	// Set up command byte for read
 	Wire.beginTransmission(_i2c_address);
 	Wire.write((address & 0x0F) | TSL2561_CMD);
@@ -400,7 +400,7 @@ boolean SFE_TSL2561::readUInt(unsigned char address, unsigned int &value)
 			value = word(high,low);
 			return(true);
 		}
-	}	
+	}
 	return(false);
 }
 
@@ -413,7 +413,7 @@ boolean SFE_TSL2561::writeUInt(unsigned char address, unsigned int value)
 	// (Also see getError() above)
 {
 	// Split int into lower and upper bytes, write each byte
-	if (writeByte(address,lowByte(value)) 
+	if (writeByte(address,lowByte(value))
 		&& writeByte(address + 1,highByte(value)))
 		return(true);
 
