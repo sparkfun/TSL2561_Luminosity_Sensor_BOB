@@ -1,8 +1,10 @@
+**NOTE:** *This product has been retired from our catalog. If you are looking for more up-to-date info, please check out some of these resources to see how other users are still hacking and improving on this product.*
+* *[SparkFun Forum](https://forum.sparkfun.com/)*
+* *[Comments Here on GitHub](https://github.com/sparkfun/SparkFun_TSL2561_Arduino_Library/issues)*
+* *[IRC Channel](https://www.sparkfun.com/news/263)*
+
 SparkFun TSL2561 Luminosity Sensor Breakout Board
 ============================================
-
-Attention! This product is retired, the repository remains for reference only
------------------------------------------------------------------------------
 
 ![TSL2561 Luminosity Sensor Breakout](https://dlnmh9ip6v2uc.cloudfront.net//images/products/1/2/0/5/5/12055-01.jpg) 
 
